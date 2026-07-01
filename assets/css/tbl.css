@@ -1,0 +1,44 @@
+/* assets/css/tbl.css */
+
+table.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 13px;
+}
+
+table.tbl th {
+  text-align: left;
+  font-weight: 700;
+  padding: 4px 6px;
+  border-bottom: 1.5px solid #aaa;
+}
+
+table.tbl td {
+  padding: 3px 6px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+table.tbl th,
+table.tbl td {
+  border-left: none;
+  border-right: none;
+}
+
+/* compact style */
+table.tbl.compact th,
+table.tbl.compact td {
+  padding: 2px 4px;
+  font-size: 12px;
+}
+
+/* spec style */
+table.tbl.spec th {
+  background: #f3f3f3;
+}
+
+table.tbl.spec th,
+table.tbl.spec td {
+  border: 1px solid #bbb;
+  padding: 5px 7px;
+}

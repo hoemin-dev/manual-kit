@@ -21,4 +21,4 @@ export/
 
 ## License
 
-MIT
+None

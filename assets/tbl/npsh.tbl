@@ -1,0 +1,7 @@
+# class: basic-table
+
+Item | Description | Note
+--- | --- | ---
+NPSHa | Available NPSH | Site condition
+NPSHr | Required NPSH | Pump data
+Margin | Safety margin | Check required
