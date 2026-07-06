@@ -160,6 +160,6 @@ body {
 
 .content th,
 .content td {
-  border-left: none !important;
-  border-right: none !important;
+  border-left: none;
+  border-right: none;
 }

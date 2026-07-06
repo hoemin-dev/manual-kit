@@ -40,13 +40,13 @@ Markdown 문법을 그대로 사용할 수 있습니다.
 | B | Banana |
 | C | Cherry |
 
----
+
 
 ## 1.4 TBL Table
 
 <table class="tbl spec" data-src="../assets/tbl/npsh.tbl"></table>
 
----
+
 
 </div>
 

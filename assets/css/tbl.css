@@ -4,7 +4,7 @@ table.tbl {
   width: 100%;
   border-collapse: collapse;
   margin: 12px 0;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 table.tbl th {
@@ -21,7 +21,11 @@ table.tbl td {
 
 table.tbl th,
 table.tbl td {
-  border-left: none;
+  border-right: 1px solid #bbb;
+}
+
+table.tbl th:last-child,
+table.tbl td:last-child {
   border-right: none;
 }
 
