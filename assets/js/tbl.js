@@ -2,119 +2,75 @@
 // Manual Kit - tbl.js
 //==================================================
 
-document.addEventListener("DOMContentLoaded", () => {
-    renderTables();
-});
-
-//==================================================
-// Render .tbl files
-//==================================================
-
 async function renderTables() {
+  const tables = document.querySelectorAll("table.tbl[data-src]");
 
-    const tables = document.querySelectorAll("table.tbl[data-src]");
+  for (const table of tables) {
+    const src = table.dataset.src;
 
-    for (const table of tables) {
+    if (!src) continue;
 
-        const src = table.dataset.src;
+    try {
+      const response = await fetch(src);
 
-        if (!src) continue;
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
 
-        try {
+      const text = await response.text();
 
-            const response = await fetch(src);
+      renderTable(table, text);
+    } catch (err) {
+      console.error(err);
 
-            if (!response.ok) {
-                throw new Error(response.status);
-            }
-
-            const text = await response.text();
-
-            renderTable(table, text);
-
-        }
-        catch (err) {
-
-            console.error(err);
-
-            table.innerHTML =
-                `<tr><td>Failed to load : ${src}</td></tr>`;
-
-        }
-
+      table.innerHTML = `<tr><td>Failed to load : ${src}</td></tr>`;
     }
-
+  }
 }
+
 
 //==================================================
 // Parse tbl
 //==================================================
 
 function renderTable(table, text) {
+  const lines = text
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
 
-    const lines = text
-        .split(/\r?\n/)
-        .map(line => line.trim())
-        .filter(line => line.length);
+  if (lines.length < 2) return;
 
-    if (lines.length < 2) return;
+  const rows = lines.map(line =>
+    line.split("|").map(cell => cell.trim())
+  );
 
-    const rows = lines.map(line =>
-        line.split("|").map(cell => cell.trim())
-    );
+  const thead = document.createElement("thead");
+  const headRow = document.createElement("tr");
 
-    //----------------------------------------------
-    // Header
-    //----------------------------------------------
+  rows[0].forEach(cell => {
+    const th = document.createElement("th");
+    th.textContent = cell;
+    headRow.appendChild(th);
+  });
 
-    const thead = document.createElement("thead");
+  thead.appendChild(headRow);
 
-    const headRow = document.createElement("tr");
+  const tbody = document.createElement("tbody");
 
-    rows[0].forEach(cell => {
+  for (let i = 2; i < rows.length; i++) {
+    const tr = document.createElement("tr");
 
-        const th = document.createElement("th");
-
-        th.textContent = cell;
-
-        headRow.appendChild(th);
-
+    rows[i].forEach(cell => {
+      const td = document.createElement("td");
+      td.textContent = cell;
+      tr.appendChild(td);
     });
 
-    thead.appendChild(headRow);
+    tbody.appendChild(tr);
+  }
 
-    //----------------------------------------------
-    // Body
-    //----------------------------------------------
-
-    const tbody = document.createElement("tbody");
-
-    for (let i = 2; i < rows.length; i++) {
-
-        const tr = document.createElement("tr");
-
-        rows[i].forEach(cell => {
-
-            const td = document.createElement("td");
-
-            td.textContent = cell;
-
-            tr.appendChild(td);
-
-        });
-
-        tbody.appendChild(tr);
-
-    }
-
-    //----------------------------------------------
-    // Replace
-    //----------------------------------------------
-
-    table.innerHTML = "";
-
-    table.appendChild(thead);
-
-    table.appendChild(tbody);
-
+  table.innerHTML = "";
+  table.appendChild(thead);
+  table.appendChild(tbody);
 }

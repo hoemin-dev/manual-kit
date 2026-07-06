@@ -17,8 +17,6 @@
 /*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
 
       </style>
-      <link rel="stylesheet" href="../assets/css/manual.css">
-<link rel="stylesheet" href="../assets/css/tbl.css">
       <!-- The content below will be included at the end of the <head> element. -->
 <script type="text/javascript">
   document.addEventListener("DOMContentLoaded", function () {
@@ -35,14 +33,12 @@ MANUAL KIT
 </div>
 <div class="content">
 <h1 id="1-introduction">1. Introduction </h1>
-<p>이 문서는 <strong>Markdown + HTML</strong>을 이용한 A4 매뉴얼 템플릿입니다.</p>
-<hr>
+<p>이 문서는 <strong>Markdown</strong>만 작성하면 A4 매뉴얼로 출력되는 템플릿입니다.</p>
 <h2 id="11-paragraph">1.1 Paragraph </h2>
 <p>일반 문단입니다.</p>
 <p>Markdown 문법을 그대로 사용할 수 있습니다.</p>
 <blockquote>
-<p>Blockquote(참고사항) 예제입니다.</p>
-<p>CSS에서 blockquote만 꾸며주면 됩니다.</p>
+<p>참고사항입니다.</p>
 </blockquote>
 <hr>
 <h2 id="12-list">1.2 List </h2>
@@ -57,7 +53,7 @@ MANUAL KIT
 <li>Third</li>
 </ol>
 <hr>
-<h2 id="13-table">1.3 Table </h2>
+<h2 id="13-markdown-table">1.3 Markdown Table </h2>
 <table>
 <thead>
 <tr>
@@ -81,6 +77,9 @@ MANUAL KIT
 </tbody>
 </table>
 <hr>
+<h2 id="14-tbl-table">1.4 TBL Table </h2>
+<table class="tbl spec" data-src="../assets/tbl/npsh.tbl"></table>
+<hr>
 </div>
 <div class="footer">
 <span class="page-no"></span>
@@ -94,67 +93,13 @@ MANUAL KIT
 MANUAL KIT
 </div>
 <div class="content">
-<table class="tbl" data-src="../assets/tbl/npsh.tbl"></table>
-<h2 id="14-formula">1.4 Formula </h2>
-<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>N</mi><mi>P</mi><mi>S</mi><msub><mi>H</mi><mi>a</mi></msub><mo>=</mo><mfrac><msub><mi>P</mi><mrow><mi>a</mi><mi>b</mi><mi>s</mi></mrow></msub><mrow><mi>ρ</mi><mi>g</mi></mrow></mfrac><mo>+</mo><mfrac><msup><mi>V</mi><mn>2</mn></msup><mrow><mn>2</mn><mi>g</mi></mrow></mfrac><mo>+</mo><mi>Z</mi><mo>−</mo><msub><mi>h</mi><mi>f</mi></msub><mo>−</mo><mfrac><msub><mi>P</mi><mi>v</mi></msub><mrow><mi>ρ</mi><mi>g</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">NPSH_a =
-\frac{P_{abs}}{\rho g}
-+
-\frac{V^2}{2g}
-+
-Z
--
-h_f
--
-\frac{P_v}{\rho g}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord mathnormal" style="margin-right:0.109em;">N</span><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="mord mathnormal" style="margin-right:0.0576em;">S</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0813em;">H</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0813em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.2408em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">ρ</span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">ab</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:2.3715em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4911em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.2222em;">V</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.0715em;">Z</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9805em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.1076em;">f</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:2.2408em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">ρ</span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.1389em;">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0359em;">v</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span><p>..</p>
 <h1 id="2-code-example">2. Code Example </h1>
-<p>JavaScript</p>
 <pre data-role="codeBlock" data-info="javascript" class="language-javascript javascript"><code><span class="token keyword keyword-const">const</span> pages <span class="token operator">=</span> <span class="token dom variable">document</span><span class="token punctuation">.</span><span class="token method function property-access">querySelectorAll</span><span class="token punctuation">(</span><span class="token string">".page"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 pages<span class="token punctuation">.</span><span class="token method function property-access">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">page<span class="token punctuation">,</span> index</span><span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token punctuation">{</span>
     <span class="token console class-name">console</span><span class="token punctuation">.</span><span class="token method function property-access">log</span><span class="token punctuation">(</span>index <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-</code></pre><hr>
-<p>HTML</p>
-<pre data-role="codeBlock" data-info="html" class="language-html html"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>page<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
-
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>header<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>footer<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-
-<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
-</code></pre><hr>
-<p>CSS</p>
-<pre data-role="codeBlock" data-info="css" class="language-css css"><code><span class="token selector"><span class="token class">.page</span></span><span class="token punctuation">{</span>
-    <span class="token property">width</span><span class="token punctuation">:</span><span class="token number">210</span><span class="token unit">mm</span><span class="token punctuation">;</span>
-    <span class="token property">height</span><span class="token punctuation">:</span><span class="token number">297</span><span class="token unit">mm</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
 </code></pre></div>
-<div class="footer">
-<span class="page-no"></span>
-<span>Manual Kit</span>
-<span>REV. A</span>
-</div>
-</div>
-<div class="page-break"></div>
-<div class="page">
-<div class="header">
-MANUAL KIT
-</div>
-<div class="content">
-<h1 id="3-conclusion">3. Conclusion </h1>
-<p>이 템플릿은</p>
-<ul>
-<li>Markdown</li>
-<li>HTML</li>
-<li>CSS</li>
-<li>JavaScript</li>
-</ul>
-<p>만으로 A4 기술문서를 작성하기 위한 기본 구조입니다.</p>
-<p>HTML은 <strong>레이아웃</strong>만 담당하고,</p>
-<p>Markdown은 <strong>내용</strong>만 담당합니다.</p>
-</div>
 <div class="footer">
 <span class="page-no"></span>
 <span>Manual Kit</span>
@@ -172,7 +117,4 @@ MANUAL KIT
     
     
   
-    </body>
-<script src="../assets/js/manual.js"></script>
-<script src="../assets/js/tbl.js"></script>
-    </html>
+    </body></html>
