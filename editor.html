@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MONAS Manual-Kit v1.0</title>
+
+    <link rel="stylesheet" href="assets/css/manual.css">
+    <link rel="stylesheet" href="assets/css/tbl.css">
+
+    <link rel="stylesheet" href="assets/codemirror/codemirror.css">
+    <link rel="stylesheet" href="assets/codemirror/theme/material-darker.min.css">
+
+    <link rel="stylesheet" href="assets/css/editor.css">
+</head>
+
+<body>
+    <div class="editor-app">
+        <header class="editor-topbar">
+            <div class="app-title">Manual-Kit</div>
+
+            <label class="preview-toggle">
+                <input type="checkbox" id="previewToggle" checked>
+                Preview
+            </label>
+        </header>
+
+        <main class="editor-main">
+            <section class="editor-pane">
+                <textarea id="markdownEditor" spellcheck="false"># Manual Kit
+
+## 1. Introduction
+
+이 문서는 **Manual Kit Editor** 테스트 문서입니다.
+
+| Item | Description |
+|---|---|
+| A | Apple |
+| B | Banana |
+</textarea>
+            </section>
+
+            <section class="preview-pane" id="previewPane">
+                <div id="preview" class="manual-preview"></div>
+            </section>
+        </main>
+
+        <footer class="editor-statusbar">
+            <span id="cursorStatus">Ln 1, Col 1</span>
+            <span id="saveStatus">Preview Ready</span>
+        </footer>
+    </div>
+
+    <script src="assets/codemirror/codemirror.min.js"></script>
+    <script src="assets/codemirror/mode/markdown/markdown.min.js"></script>
+    <script src="assets/codemirror/addon/selection/active-line.min.js"></script>
+    <script src="assets/markdown-it/markdown-it.min.js"></script>
+    <script src="assets/js/editor.js"></script>
+</body>
+
+</html>

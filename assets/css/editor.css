@@ -1,0 +1,197 @@
+/* Cascadia Code */
+@font-face {
+  font-family: "Cascadia Code";
+  src: url("../fonts/CascadiaCode/CascadiaCode-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Cascadia Code";
+  src: url("../fonts/CascadiaCode/CascadiaCode-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Nanum Gothic */
+@font-face {
+  font-family: "Nanum Gothic";
+  src: url("../fonts/NanumGothic/NanumGothic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Nanum Gothic";
+  src: url("../fonts/NanumGothic/NanumGothicBold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+body {
+  margin: 0;
+  background: #1f252d;
+  font-family: Arial, "Noto Sans KR", sans-serif;
+}
+
+.editor-app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-topbar {
+  height: 44px;
+  background: #243246;
+  color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  box-sizing: border-box;
+}
+
+.app-title {
+  font-weight: 700;
+}
+
+.preview-toggle {
+  font-size: 13px;
+}
+
+.editor-main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.editor-pane,
+.preview-pane {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.editor-pane {
+  border-right: 1px solid #444;
+}
+
+#markdownEditor {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  resize: none;
+  border: 0;
+  outline: none;
+  padding: 16px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.55;
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.preview-pane {
+  background: #e5e5e5;
+  overflow: auto;
+}
+
+.manual-preview {
+  padding: 20px;
+}
+
+.editor-statusbar {
+  height: 26px;
+  background: #18202b;
+  color: #cbd5e1;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.editor-main.preview-off .preview-pane {
+  display: none;
+}
+
+.editor-main.preview-off .editor-pane {
+  border-right: 0;
+}
+
+.CodeMirror {
+  height: 100%;
+  font-family: "Cascadia Code", "Nanum Gothic", monospace;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* 행번호와 코드 사이 간격 */
+.CodeMirror-gutters {
+  padding-right: 8px;
+}
+
+.CodeMirror-linenumber {
+  padding: 0 10px 0 8px;
+  min-width: 32px;
+}
+
+/* 코드 본문 왼쪽 여백 */
+.CodeMirror pre.CodeMirror-line,
+.CodeMirror pre.CodeMirror-line-like {
+  padding-left: 15x;
+}
+
+/* 현재 줄 */
+.cm-s-material-darker .CodeMirror-activeline-background {
+  background: #2c313c !important;
+}
+
+/* 현재 줄 번호칸 */
+.cm-s-material-darker .CodeMirror-activeline-gutter {
+  background: #2c313c !important;
+}
+
+/* 현재 줄 번호 */
+.cm-s-material-darker .CodeMirror-activeline-gutter .CodeMirror-linenumber {
+  color: #ffffff !important;
+}
+
+
+/* 기본 글자 */
+.cm-s-material-darker.CodeMirror {
+  color: #d0d4dc !important;
+}
+
+/* 제목(#) */
+.cm-header {
+    color: #d7ba7d;
+    font-weight: 400;
+}
+
+/* **Bold** */
+.cm-strong {
+    color: #d7ba7d;
+    font-weight: 400;
+}
+
+/* *Italic* */
+.cm-em {
+    color: #c586c0;
+}
+
+/* `code` */
+.cm-comment {
+    color: #ce9178;
+}
+
+/* 링크 */
+.cm-link {
+    color: #4fc1ff;
+}
+
+/* 인용 */
+.cm-quote {
+    color: #66a04b;
+}
