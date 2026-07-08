@@ -28,48 +28,63 @@
   font-style: normal;
 }
 
+/* Base */
+html,
 body {
+  width: 100%;
+  height: 100%;
   margin: 0;
-  background: #1f252d;
-  font-family: Arial, "Noto Sans KR", sans-serif;
+  overflow: hidden;
 }
 
+body {
+  background: #1f252d;
+  font-family: Arial, "Nanum Gothic", sans-serif;
+}
+
+/* App Layout */
 .editor-app {
+  width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-.editor-topbar {
-  height: 44px;
-  background: #243246;
-  color: #f0f0f0;
+/* Header 아래 전체 작업 영역 */
+.editor-workspace {
+  flex: 1;
+  min-height: 0;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 14px;
-  box-sizing: border-box;
+  overflow: hidden;
 }
 
-.app-title {
-  font-weight: 700;
+/* 파일트리 오른쪽 영역 */
+.editor-workarea {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.preview-toggle {
-  font-size: 13px;
-}
-
+/* Tabs 아래 에디터 + 프리뷰 */
 .editor-main {
   flex: 1;
-  display: flex;
+  min-width: 0;
   min-height: 0;
+  display: flex;
+  overflow: hidden;
 }
 
+/* Editor / Preview Pane */
 .editor-pane,
 .preview-pane {
   flex: 1;
   min-width: 0;
   height: 100%;
+  overflow: hidden;
 }
 
 .editor-pane {
@@ -77,18 +92,7 @@ body {
 }
 
 #markdownEditor {
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  resize: none;
-  border: 0;
-  outline: none;
-  padding: 16px;
-  font-family: Consolas, "Courier New", monospace;
-  font-size: 14px;
-  line-height: 1.55;
-  background: #111827;
-  color: #e5e7eb;
+  display: none;
 }
 
 .preview-pane {
@@ -100,8 +104,10 @@ body {
   padding: 20px;
 }
 
+/* Status Bar */
 .editor-statusbar {
   height: 26px;
+  flex-shrink: 0;
   background: #18202b;
   color: #cbd5e1;
   font-size: 12px;
@@ -112,6 +118,7 @@ body {
   box-sizing: border-box;
 }
 
+/* Preview Toggle */
 .editor-main.preview-off .preview-pane {
   display: none;
 }
@@ -120,11 +127,12 @@ body {
   border-right: 0;
 }
 
+/* CodeMirror */
 .CodeMirror {
   height: 100%;
   font-family: "Cascadia Code", "Nanum Gothic", monospace;
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 /* 행번호와 코드 사이 간격 */
@@ -140,7 +148,7 @@ body {
 /* 코드 본문 왼쪽 여백 */
 .CodeMirror pre.CodeMirror-line,
 .CodeMirror pre.CodeMirror-line-like {
-  padding-left: 15x;
+  padding-left: 15px;
 }
 
 /* 현재 줄 */
@@ -158,7 +166,6 @@ body {
   color: #ffffff !important;
 }
 
-
 /* 기본 글자 */
 .cm-s-material-darker.CodeMirror {
   color: #d0d4dc !important;
@@ -166,32 +173,32 @@ body {
 
 /* 제목(#) */
 .cm-header {
-    color: #d7ba7d;
-    font-weight: 400;
+  color: #d7ba7d;
+  font-weight: 400;
 }
 
 /* **Bold** */
 .cm-strong {
-    color: #d7ba7d;
-    font-weight: 400;
+  color: #d7ba7d;
+  font-weight: 400;
 }
 
 /* *Italic* */
 .cm-em {
-    color: #c586c0;
+  color: #c586c0;
 }
 
 /* `code` */
 .cm-comment {
-    color: #ce9178;
+  color: #ce9178;
 }
 
 /* 링크 */
 .cm-link {
-    color: #4fc1ff;
+  color: #4fc1ff;
 }
 
 /* 인용 */
 .cm-quote {
-    color: #66a04b;
+  color: #66a04b;
 }

@@ -11,39 +11,46 @@
     <link rel="stylesheet" href="assets/codemirror/codemirror.css">
     <link rel="stylesheet" href="assets/codemirror/theme/material-darker.min.css">
 
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/filetree.css">
+    <link rel="stylesheet" href="assets/css/tabs.css">
     <link rel="stylesheet" href="assets/css/editor.css">
 </head>
 
 <body>
     <div class="editor-app">
-        <header class="editor-topbar">
-            <div class="app-title">Manual-Kit</div>
 
-            <label class="preview-toggle">
-                <input type="checkbox" id="previewToggle" checked>
-                Preview
-            </label>
-        </header>
+        <div id="header"></div>
 
-        <main class="editor-main">
-            <section class="editor-pane">
-                <textarea id="markdownEditor" spellcheck="false"># Manual Kit
+        <div class="editor-workspace">
 
-## 1. Introduction
+            <div id="filetreeMount"></div>
 
-이 문서는 **Manual Kit Editor** 테스트 문서입니다.
+            <div class="editor-workarea">
 
-| Item | Description |
-|---|---|
-| A | Apple |
-| B | Banana |
+                <div id="tabsMount"></div>
+
+                <main class="editor-main">
+                    <section class="editor-pane">
+<textarea id="markdownEditor" spellcheck="false"># Manual Kit
+
+## 소개
+
+Manual Kit는 Markdown 기반의 기술문서 작성 도구입니다.
+
+## 시작하기
+
+새 문서를 작성하려면 이 내용을 삭제하거나 수정하세요.
 </textarea>
-            </section>
+                    </section>
 
-            <section class="preview-pane" id="previewPane">
-                <div id="preview" class="manual-preview"></div>
-            </section>
-        </main>
+                    <section class="preview-pane" id="previewPane">
+                        <div id="preview" class="manual-preview"></div>
+                    </section>
+                </main>
+
+            </div>
+        </div>
 
         <footer class="editor-statusbar">
             <span id="cursorStatus">Ln 1, Col 1</span>
@@ -55,6 +62,10 @@
     <script src="assets/codemirror/mode/markdown/markdown.min.js"></script>
     <script src="assets/codemirror/addon/selection/active-line.min.js"></script>
     <script src="assets/markdown-it/markdown-it.min.js"></script>
+
+    <script src="assets/js/header.js"></script>
+    <script src="assets/js/filetree.js"></script>
+    <script src="assets/js/tabs.js"></script>
     <script src="assets/js/editor.js"></script>
 </body>
 

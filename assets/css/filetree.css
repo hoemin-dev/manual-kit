@@ -1,0 +1,98 @@
+.filetree {
+  width: 240px;
+  min-width: 240px;
+  height: 100%;
+  background: #111827;
+  border-right: 1px solid #374151;
+  color: #d1d5db;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filetree-header {
+  height: 38px;
+  padding: 0 10px;
+  border-bottom: 1px solid #374151;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.filetree-header button {
+  font-size: 11px;
+  padding: 4px 7px;
+  border: 1px solid #4b5563;
+  border-radius: 4px;
+  background: #1f2937;
+  color: #e5e7eb;
+  cursor: pointer;
+}
+
+.filetree-body {
+  flex: 1;
+  overflow: auto;
+  padding: 8px 0;
+}
+
+.filetree-empty {
+  padding: 10px;
+  color: #6b7280;
+}
+
+.filetree-item {
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.filetree-item:hover {
+  background: #1f2937;
+}
+
+.filetree-item.active {
+  background: #374151;
+  color: #ffffff;
+}
+
+.filetree-children {
+  margin-left: 14px;
+}
+
+#filetreeMount {
+    width: 240px;
+    min-width: 240px;
+    height: 100%;
+    flex-shrink: 0;
+    transition: width 0.15s ease, min-width 0.15s ease;
+}
+
+#filetreeMount.collapsed {
+    width: 34px;
+    min-width: 34px;
+}
+
+#filetreeMount.collapsed .filetree {
+    width: 34px;
+    min-width: 34px;
+}
+
+#filetreeMount.collapsed .filetree-header span,
+#filetreeMount.collapsed #openFolderBtn,
+#filetreeMount.collapsed .filetree-body {
+    display: none;
+}
+
+.filetree-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+#toggleFiletreeBtn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+}

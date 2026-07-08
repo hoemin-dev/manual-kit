@@ -48,14 +48,36 @@ cm.on("cursorActivity", () => {
   updateCursorStatus();
 });
 
-previewToggle.addEventListener("change", () => {
-  editorMain.classList.toggle("preview-off", !previewToggle.checked);
+document.addEventListener("headerLoaded", () => {
+  const previewToggle = document.getElementById("previewToggle");
 
-  // Preview 껐다 켰을 때 CodeMirror 폭 재계산
-  setTimeout(() => {
-    cm.refresh();
-  }, 0);
+  if (!previewToggle) return;
+
+  previewToggle.addEventListener("click", () => {
+    previewToggle.classList.toggle("active");
+
+    const visible = previewToggle.classList.contains("active");
+
+    editorMain.classList.toggle("preview-off", !visible);
+
+    setTimeout(() => {
+      cm.refresh();
+    }, 0);
+  });
 });
+
+window.openEditorFile = function ({ name, handle, text }) {
+  window.currentFileHandle = handle;
+  window.currentFileName = name;
+
+  if (window.editor) {
+    window.editor.setValue(text);
+  }
+
+  if (typeof updatePreview === "function") {
+    updatePreview();
+  }
+};
 
 renderPreview();
 updateCursorStatus();
