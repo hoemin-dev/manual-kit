@@ -4,7 +4,10 @@
 
 // Markdown-it
 const md = window.markdownit({
-  html: true
+  html: true,
+  linkify: true,
+  typographer: true,
+  breaks: false,
 });
 
 // Elements
@@ -22,11 +25,13 @@ const cm = CodeMirror.fromTextArea(textarea, {
   gutters: ["CodeMirror-linenumbers"],
   lineWrapping: true,
   styleActiveLine: true,
-  theme: "material-darker"
+  theme: "material-darker",
 });
 
 function renderPreview() {
-  const html = md.render(cm.getValue());
+  const source = cm.getValue();
+  const html = renderManualMarkdown(source, md);
+
   preview.innerHTML = html;
   saveStatus.textContent = "Preview Updated";
 }
