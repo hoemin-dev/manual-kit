@@ -139,7 +139,6 @@ function setPreviewVisible(visible) {
 
   editorMain.classList.toggle("preview-off", !visible);
 
-  const headerToggle = document.getElementById("previewToggle");
   const toolbarToggle = document.getElementById("toolbarPreview");
 
   if (headerToggle) {
@@ -259,27 +258,6 @@ cm.addOverlay({
     stream.next();
     return null;
   },
-});
-
-//==================================================
-// Header Events
-//==================================================
-
-document.addEventListener("headerLoaded", () => {
-  const previewToggle = document.getElementById("previewToggle");
-
-  if (!previewToggle) return;
-
-  const previewVisible =
-    !editorMain?.classList.contains("preview-off");
-
-  previewToggle.classList.toggle("active", previewVisible);
-  previewToggle.setAttribute(
-    "aria-pressed",
-    String(previewVisible)
-  );
-
-  previewToggle.addEventListener("click", togglePreview);
 });
 
 //==================================================
