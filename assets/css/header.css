@@ -78,38 +78,6 @@
     flex: 1;
 }
 
-.preview-btn,
-.export-btn {
-    height: 26px;
-    padding: 0 8px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.preview-btn {
-    background: #2c3443;
-    color: #cbd5e1;
-    margin-right: 6px;
-}
-
-.preview-btn.active {
-    background: #0e639c;
-    color: #fff;
-}
-
-.export-btn {
-    background: #0e639c;
-    color: white;
-    font-weight: 400;
-}
-
-.export-btn:hover,
-.preview-btn.active:hover {
-    background: #1d4ed8;
-}
-
 .mk-tabs {
     height: 34px;
     display: flex;
