@@ -1,0 +1,99 @@
+<div class="editor-toolbar" role="toolbar" aria-label="문서 도구 모음">
+  <div class="toolbar-group">
+    <button
+      type="button"
+      class="toolbar-button"
+      id="toolbarNew"
+      title="새 문서 (Ctrl+N)"
+    >
+      <span class="toolbar-icon" aria-hidden="true">＋</span>
+      <span>New</span>
+    </button>
+
+    <button
+      type="button"
+      class="toolbar-button"
+      id="toolbarOpen"
+      title="문서 열기 (Ctrl+O)"
+    >
+      <span class="toolbar-icon" aria-hidden="true">⌑</span>
+      <span>Open</span>
+    </button>
+
+    <button
+      type="button"
+      class="toolbar-button toolbar-button-primary"
+      id="toolbarSave"
+      title="저장 (Ctrl+S)"
+    >
+      <span class="toolbar-icon" aria-hidden="true">▣</span>
+      <span>Save</span>
+    </button>
+  </div>
+
+  <div class="toolbar-separator" aria-hidden="true"></div>
+
+  <div class="toolbar-group">
+    <button
+      type="button"
+      class="toolbar-button toolbar-icon-button"
+      id="toolbarUndo"
+      title="실행 취소 (Ctrl+Z)"
+      aria-label="실행 취소"
+    >
+      ↶
+    </button>
+
+    <button
+      type="button"
+      class="toolbar-button toolbar-icon-button"
+      id="toolbarRedo"
+      title="다시 실행 (Ctrl+Y)"
+      aria-label="다시 실행"
+    >
+      ↷
+    </button>
+  </div>
+
+  <div class="toolbar-separator" aria-hidden="true"></div>
+
+  <div class="toolbar-group">
+    <button
+      type="button"
+      class="toolbar-button is-active"
+      id="toolbarPreview"
+      title="미리보기 표시 또는 숨기기"
+      aria-pressed="true"
+    >
+      <span class="toolbar-icon" aria-hidden="true">◫</span>
+      <span>Preview</span>
+    </button>
+  </div>
+
+  <div class="toolbar-spacer"></div>
+
+  <div class="toolbar-document-name" id="toolbarDocumentName">
+    Untitled.md
+  </div>
+
+  <div
+    class="toolbar-save-state is-saved"
+    id="toolbarSaveState"
+    role="status"
+  >
+    <span class="toolbar-state-dot"></span>
+    <span class="toolbar-state-text">Saved</span>
+  </div>
+
+  <div class="toolbar-separator" aria-hidden="true"></div>
+
+  <button
+    type="button"
+    class="toolbar-button"
+    id="toolbarExport"
+    title="HTML로 내보내기"
+  >
+    <span class="toolbar-icon" aria-hidden="true">⇩</span>
+    <span>Export</span>
+  </button>
+</div>

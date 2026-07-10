@@ -1,0 +1,316 @@
+/*==================================================
+  Command Wheel
+==================================================*/
+
+#cwheelMount {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  z-index: 50;
+}
+
+.cwheel {
+  --toggle-size: 44px;
+  --item-size: 38px;
+
+  position: relative;
+  width: var(--toggle-size);
+  height: var(--toggle-size);
+}
+
+
+/*==================================================
+  Toggle
+==================================================*/
+
+.cwheel__toggle,
+.cwheel__item {
+  border-radius: 50%;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cwheel__toggle {
+  position: absolute;
+  inset: 0;
+
+  width: var(--toggle-size);
+  height: var(--toggle-size);
+
+  border: 1px solid #5d6675;
+  background: #252b35;
+  color: #e3e7ee;
+
+  display: grid;
+  place-items: center;
+
+  box-shadow:
+    0 7px 20px rgba(0,0,0,.38),
+    inset 0 1px 0 rgba(255,255,255,.06);
+
+  transition:
+    transform .15s,
+    background .15s,
+    border-color .15s;
+}
+
+.cwheel__toggle:hover{
+  transform:scale(1.06);
+  background:#303744;
+  border-color:#8791a1;
+}
+
+.cwheel__toggle:focus-visible,
+.cwheel__item:focus-visible{
+  outline:2px solid #9ec2ff;
+  outline-offset:3px;
+}
+
+
+/*==================================================
+  Toggle Icon
+==================================================*/
+
+.cwheel__toggle-icon,
+.cwheel__toggle-icon::before,
+.cwheel__toggle-icon::after{
+  width:4px;
+  height:4px;
+
+  border-radius:50%;
+  background:currentColor;
+
+  box-shadow:8px 0 0 currentColor;
+}
+
+.cwheel__toggle-icon{
+  position:relative;
+  transform:translateX(-4px);
+}
+
+.cwheel__toggle-icon::before,
+.cwheel__toggle-icon::after{
+  content:"";
+  position:absolute;
+  left:0;
+}
+
+.cwheel__toggle-icon::before{
+  top:-8px;
+}
+
+.cwheel__toggle-icon::after{
+  top:8px;
+}
+
+
+/* 펼쳤을때 X */
+
+.cwheel.is-open .cwheel__toggle-icon{
+  width:18px;
+  height:2px;
+
+  border-radius:2px;
+
+  box-shadow:none;
+
+  transform:rotate(45deg);
+}
+
+.cwheel.is-open .cwheel__toggle-icon::before{
+  width:18px;
+  height:2px;
+
+  top:0;
+
+  border-radius:2px;
+
+  box-shadow:none;
+
+  transform:rotate(90deg);
+}
+
+.cwheel.is-open .cwheel__toggle-icon::after{
+  display:none;
+}
+
+
+/*==================================================
+  Commands
+==================================================*/
+
+.cwheel__commands{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:0;
+  height:0;
+
+  pointer-events:none;
+}
+
+.cwheel__item{
+
+  --command-x:0px;
+  --command-y:0px;
+  --command-color:#77808f;
+
+  position:absolute;
+  left:50%;
+  top:50%;
+
+  width:var(--item-size);
+  height:var(--item-size);
+
+  padding:0;
+
+  border:1px solid var(--command-color);
+  background:#202630;
+  color:var(--command-color);
+
+  display:grid;
+  place-items:center;
+
+  font-family:"Cascadia Code","Nanum Gothic",monospace;
+  font-size:14px;
+  font-weight:700;
+
+  opacity:0;
+  pointer-events:none;
+
+  box-shadow:
+    0 5px 14px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.05);
+
+  transform:
+    translate(-50%,-50%)
+    translate(0,0)
+    scale(.55);
+
+  transition:
+    transform .22s cubic-bezier(.2,.75,.25,1),
+    opacity .15s,
+    background .15s,
+    color .15s;
+}
+
+.cwheel.is-open .cwheel__item{
+
+  opacity:1;
+  pointer-events:auto;
+
+  transform:
+    translate(-50%,-50%)
+    translate(var(--command-x),var(--command-y))
+    scale(1);
+}
+
+.cwheel.is-open .cwheel__item:hover{
+
+  background:var(--command-color);
+  color:#1b1f26;
+
+  transform:
+    translate(-50%,-50%)
+    translate(var(--command-x),var(--command-y))
+    scale(1.1);
+}
+
+
+/*==================================================
+  위치 (nth-child)
+==================================================*/
+
+/* %page */
+.cwheel__item:nth-child(1){
+    left:-55px;
+    top:-95px;
+}
+
+
+/* %chapter */
+.cwheel__item:nth-child(2){
+    left:-95px;
+    top:-45px;
+}
+
+/* %sub */
+.cwheel__item:nth-child(3){
+    left:-110px;
+    top:15px;
+}
+
+
+/*==================================================
+  Colors
+==================================================*/
+
+.cwheel__item--page{
+  --command-color:#5fa8ff;
+}
+
+.cwheel__item--chapter{
+  --command-color:#ff9a38;
+}
+
+.cwheel__item--sub{
+  --command-color:#b987ff;
+}
+
+
+/*==================================================
+  Label
+==================================================*/
+
+.cwheel__item::after{
+
+  content:attr(data-label);
+
+  position:absolute;
+  right:calc(100% + 10px);
+  top:50%;
+
+  padding:4px 7px;
+
+  border:1px solid #404753;
+  border-radius:5px;
+
+  background:#171b22;
+  color:#e4e8ef;
+
+  font-size:11px;
+  font-family:"Cascadia Code",monospace;
+
+  white-space:nowrap;
+
+  opacity:0;
+  pointer-events:none;
+
+  transform:translate(5px,-50%);
+
+  transition:
+    opacity .15s,
+    transform .15s;
+}
+
+.cwheel__item:hover::after{
+
+  opacity:1;
+
+  transform:translate(0,-50%);
+}
+
+
+/*==================================================
+  Responsive
+==================================================*/
+
+@media (max-width:900px){
+
+  #cwheelMount{
+    right:12px;
+    bottom:12px;
+  }
+
+}

@@ -1,0 +1,49 @@
+<div class="cwheel" id="cwheel">
+  <div class="cwheel__commands" aria-hidden="true">
+    <button
+      type="button"
+      class="cwheel__item cwheel__item--page"
+      data-command="%page"
+      data-command-type="line"
+      data-label="%page"
+      aria-label="페이지 나누기"
+      title="%page · 페이지 나누기"
+    >
+      <span aria-hidden="true">P</span>
+    </button>
+
+    <button
+      type="button"
+      class="cwheel__item cwheel__item--chapter"
+      data-command="%chapter "
+      data-command-type="argument"
+      data-label="%chapter"
+      aria-label="챕터 시작"
+      title="%chapter · 챕터 시작"
+    >
+      <span aria-hidden="true">C</span>
+    </button>
+
+    <button
+      type="button"
+      class="cwheel__item cwheel__item--sub"
+      data-command="%sub "
+      data-command-type="argument"
+      data-label="%sub"
+      aria-label="소제목 삽입"
+      title="%sub · 소제목 삽입"
+    >
+      <span aria-hidden="true">S</span>
+    </button>
+  </div>
+
+  <button
+    type="button"
+    class="cwheel__toggle"
+    aria-label="특수 명령어 열기"
+    aria-expanded="false"
+    title="특수 명령어 · Ctrl + Alt + M"
+  >
+    <span class="cwheel__toggle-icon" aria-hidden="true"></span>
+  </button>
+</div>
