@@ -53,6 +53,17 @@ cm.on("cursorActivity", () => {
   updateCursorStatus();
 });
 
+cm.addOverlay({
+  token(stream) {
+    if (stream.match(/^%[a-zA-Z]+/)) {
+      return "mk-command";
+    }
+
+    while (stream.next() != null && !stream.sol()) {}
+    return null;
+  }
+});
+
 document.addEventListener("headerLoaded", () => {
   const previewToggle = document.getElementById("previewToggle");
 

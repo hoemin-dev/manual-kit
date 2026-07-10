@@ -203,6 +203,13 @@ body {
   color: #66a04b;
 }
 
+/* %특수명령 */
+.cm-mk-command {
+  color: #ff9800;
+  font-weight: bold;
+  font-size: 16px;
+}
+
 .preview blockquote,
 .manual-page blockquote {
   margin: 12px 0;
@@ -218,8 +225,78 @@ body {
 }
 
 /* Main content area */
+.page-view {
+  width: 170mm;
+  margin: 0 auto 16px;
+}
+
 .page {
-    width: 170mm;
-    min-height: 237mm;
-    overflow: hidden;
+  width: 170mm;
+  height: 237mm;
+  overflow: hidden;
+  background: #fff;
+  --heading-number-width: 64px;
+}
+
+.preview-page-number {
+  margin-top: 2px;
+  text-align: center;
+  font-size: 11px;
+  color: #888;
+  user-select: none;
+}
+
+
+.page h1 {
+  margin: 1.6em 0 0.8em;
+}
+
+.page h2 {
+  margin: 1.6em 0 0.45em;
+}
+
+.page h3 {
+  margin: 1.35em 0 0.4em;
+}
+
+.page h4,
+.page h5,
+.page h6 {
+  margin: 1.15em 0 0.35em;
+}
+
+.page p {
+  margin: 0 0 0.75em;
+}
+
+.manual-heading {
+  display: flex;
+  align-items: baseline;
+}
+
+.manual-heading-title {
+  min-width: 0;
+}
+
+.manual-subheading {
+  margin-top: 16px;
+  margin-bottom: 6px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.manual-heading-number {
+  flex: 0 0 var(--heading-number-width);
+  color: #009fe3;
+  font-weight: 700;
+}
+
+.manual-numbered-content > p,
+.manual-numbered-content > ul,
+.manual-numbered-content > ol,
+.manual-numbered-content > blockquote,
+.manual-numbered-content > pre,
+.manual-numbered-content > table,
+.manual-numbered-content > .manual-subheading {
+  margin-left: var(--heading-number-width);
 }
