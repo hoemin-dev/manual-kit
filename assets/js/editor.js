@@ -141,11 +141,6 @@ function setPreviewVisible(visible) {
 
   const toolbarToggle = document.getElementById("toolbarPreview");
 
-  if (headerToggle) {
-    headerToggle.classList.toggle("active", visible);
-    headerToggle.setAttribute("aria-pressed", String(visible));
-  }
-
   if (toolbarToggle) {
     toolbarToggle.classList.toggle("is-active", visible);
     toolbarToggle.setAttribute("aria-pressed", String(visible));
@@ -393,4 +388,316 @@ document.addEventListener("DOMContentLoaded", async () => {
   requestAnimationFrame(() => {
     cm.refresh();
   });
+
+  initEditorSplitResizer();
 });
+
+//==================================================
+// Editor / Preview Split Resizer
+//==================================================
+
+function initEditorSplitResizer() {
+  const editorMain = document.querySelector(".editor-main");
+  const editorPane = document.getElementById("editorPane");
+  const previewPane = document.getElementById("previewPane");
+  const divider = document.getElementById("editorDivider");
+
+  if (!editorMain || !editorPane || !previewPane || !divider) {
+    console.warn("[split] 분할 영역 요소를 찾지 못했습니다.");
+    return;
+  }
+
+  const STORAGE_KEY = "manualkit.editorSplitRatio";
+
+  const DEFAULT_RATIO = 0.5;
+  const MIN_EDITOR_WIDTH = 280;
+  const MIN_PREVIEW_WIDTH = 280;
+  const KEYBOARD_STEP = 20;
+
+  let isDragging = false;
+  let lastRatio = loadSavedRatio();
+
+  // --------------------------------------------------
+  // 저장된 비율 불러오기
+  // --------------------------------------------------
+
+  function loadSavedRatio() {
+    const stored = Number.parseFloat(
+      localStorage.getItem(STORAGE_KEY)
+    );
+
+    if (!Number.isFinite(stored)) {
+      return DEFAULT_RATIO;
+    }
+
+    return Math.min(Math.max(stored, 0.1), 0.9);
+  }
+
+  // --------------------------------------------------
+  // 비율 저장
+  // --------------------------------------------------
+
+  function saveRatio(ratio) {
+    try {
+      localStorage.setItem(STORAGE_KEY, String(ratio));
+    } catch (error) {
+      console.warn("[split] 분할 비율 저장 실패", error);
+    }
+  }
+
+  // --------------------------------------------------
+  // 현재 사용 가능한 폭
+  // --------------------------------------------------
+
+  function getAvailableWidth() {
+    const dividerWidth = divider.getBoundingClientRect().width;
+
+    return Math.max(
+      0,
+      editorMain.clientWidth - dividerWidth
+    );
+  }
+
+  // --------------------------------------------------
+  // 현재 화면 크기에 맞는 최소/최대 폭 계산
+  // --------------------------------------------------
+
+  function getWidthLimits() {
+    const availableWidth = getAvailableWidth();
+
+    // 화면이 너무 좁을 경우 양쪽 최소폭을 유동적으로 축소
+    const editorMinimum = Math.min(
+      MIN_EDITOR_WIDTH,
+      availableWidth * 0.45
+    );
+
+    const previewMinimum = Math.min(
+      MIN_PREVIEW_WIDTH,
+      availableWidth * 0.45
+    );
+
+    const minWidth = editorMinimum;
+    const maxWidth = Math.max(
+      minWidth,
+      availableWidth - previewMinimum
+    );
+
+    return {
+      availableWidth,
+      minWidth,
+      maxWidth,
+    };
+  }
+
+  // --------------------------------------------------
+  // 에디터 폭 적용
+  // --------------------------------------------------
+
+  function applyEditorWidth(width, shouldSave = false) {
+    const {
+      availableWidth,
+      minWidth,
+      maxWidth,
+    } = getWidthLimits();
+
+    if (availableWidth <= 0) {
+      return;
+    }
+
+    const clampedWidth = Math.min(
+      Math.max(width, minWidth),
+      maxWidth
+    );
+
+    const ratio = clampedWidth / availableWidth;
+
+    editorPane.style.flex = `0 0 ${clampedWidth}px`;
+    previewPane.style.flex = "1 1 0";
+
+    divider.setAttribute(
+      "aria-valuenow",
+      String(Math.round(ratio * 100))
+    );
+
+    divider.setAttribute("aria-valuemin", "10");
+    divider.setAttribute("aria-valuemax", "90");
+
+    lastRatio = ratio;
+
+    if (shouldSave) {
+      saveRatio(ratio);
+    }
+
+    refreshCodeMirror();
+  }
+
+  // --------------------------------------------------
+  // 저장된 비율 적용
+  // --------------------------------------------------
+
+  function applyRatio(ratio, shouldSave = false) {
+    const availableWidth = getAvailableWidth();
+
+    if (availableWidth <= 0) {
+      return;
+    }
+
+    applyEditorWidth(
+      availableWidth * ratio,
+      shouldSave
+    );
+  }
+
+  // --------------------------------------------------
+  // CodeMirror 폭 다시 계산
+  // --------------------------------------------------
+
+  function refreshCodeMirror() {
+    if (
+      typeof cm !== "undefined" &&
+      cm &&
+      typeof cm.refresh === "function"
+    ) {
+      requestAnimationFrame(() => {
+        cm.refresh();
+      });
+    }
+  }
+
+  // --------------------------------------------------
+  // 포인터 위치로 폭 계산
+  // --------------------------------------------------
+
+  function resizeFromPointer(clientX) {
+    const mainRect = editorMain.getBoundingClientRect();
+    const newEditorWidth = clientX - mainRect.left;
+
+    applyEditorWidth(newEditorWidth);
+  }
+
+  // --------------------------------------------------
+  // 드래그 시작
+  // --------------------------------------------------
+
+  function startDragging(event) {
+    if (
+      event.button !== undefined &&
+      event.button !== 0
+    ) {
+      return;
+    }
+
+    if (editorMain.classList.contains("preview-off")) {
+      return;
+    }
+
+    isDragging = true;
+
+    divider.classList.add("is-dragging");
+    document.body.classList.add("editor-resizing");
+
+    if (event.pointerId !== undefined) {
+      divider.setPointerCapture(event.pointerId);
+    }
+
+    resizeFromPointer(event.clientX);
+
+    event.preventDefault();
+  }
+
+  // --------------------------------------------------
+  // 드래그 이동
+  // --------------------------------------------------
+
+  function moveDragging(event) {
+    if (!isDragging) {
+      return;
+    }
+
+    resizeFromPointer(event.clientX);
+    event.preventDefault();
+  }
+
+  // --------------------------------------------------
+  // 드래그 종료
+  // --------------------------------------------------
+
+  function stopDragging(event) {
+    if (!isDragging) {
+      return;
+    }
+
+    isDragging = false;
+
+    divider.classList.remove("is-dragging");
+    document.body.classList.remove("editor-resizing");
+
+    if (
+      event.pointerId !== undefined &&
+      divider.hasPointerCapture(event.pointerId)
+    ) {
+      divider.releasePointerCapture(event.pointerId);
+    }
+
+    saveRatio(lastRatio);
+    refreshCodeMirror();
+  }
+
+  // --------------------------------------------------
+  // 더블클릭 시 50:50 복원
+  // --------------------------------------------------
+
+  function resetSplitRatio() {
+    applyRatio(DEFAULT_RATIO, true);
+  }
+
+  // --------------------------------------------------
+  // 창 크기 변경 대응
+  // --------------------------------------------------
+
+  function handleWindowResize() {
+    if (editorMain.classList.contains("preview-off")) {
+      return;
+    }
+
+    applyRatio(lastRatio);
+  }
+
+  // --------------------------------------------------
+  // 이벤트 등록
+  // --------------------------------------------------
+
+  divider.addEventListener("pointerdown", startDragging);
+  divider.addEventListener("pointermove", moveDragging);
+  divider.addEventListener("pointerup", stopDragging);
+  divider.addEventListener("pointercancel", stopDragging);
+
+  divider.addEventListener(
+    "dblclick",
+    resetSplitRatio
+  );
+
+  window.addEventListener(
+    "resize",
+    handleWindowResize
+  );
+
+  // Preview를 다시 켰을 때 이전 분할 비율 복원
+  document.addEventListener(
+    "manualkit:previewVisibilityChanged",
+    (event) => {
+      if (!event.detail?.visible) {
+        return;
+      }
+
+      requestAnimationFrame(() => {
+        applyRatio(lastRatio);
+      });
+    }
+  );
+
+  // 초기 비율 적용
+  requestAnimationFrame(() => {
+    applyRatio(lastRatio);
+  });
+}

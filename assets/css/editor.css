@@ -79,26 +79,120 @@ body {
 }
 
 /* Editor / Preview Pane */
-.editor-pane,
-.preview-pane {
+/* ==================================================
+   Editor / Preview Split Layout
+================================================== */
+
+.editor-main {
   flex: 1;
   min-width: 0;
-  height: 100%;
+  min-height: 0;
+  display: flex;
   overflow: hidden;
+  position: relative;
 }
 
+/* 에디터 영역 */
 .editor-pane {
-  border-right: 1px solid #444;
+  flex: 0 0 50%;
+  min-width: 280px;
+  height: 100%;
+  overflow: hidden;
   position: relative;
+}
+
+/* 프리뷰 영역 */
+.preview-pane {
+  flex: 1 1 0;
+  min-width: 280px;
+  height: 100%;
+  overflow: auto;
+  background: #e5e5e5;
+}
+
+/* ==================================================
+   Draggable Divider
+================================================== */
+
+.editor-divider {
+  position: relative;
+  flex: 0 0 7px;
+  width: 7px;
+  height: 100%;
+  cursor: col-resize;
+  background: #252b34;
+  user-select: none;
+  touch-action: none;
+  z-index: 30;
+  transition: background-color 0.12s ease;
+}
+
+.editor-divider:hover,
+.editor-divider:focus-visible,
+.editor-divider.is-dragging {
+  background: #4c91d9;
+}
+
+.editor-divider:focus-visible {
+  outline: none;
+}
+
+/* 가운데 작은 손잡이 */
+.editor-divider-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 42px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.editor-divider:hover .editor-divider-handle,
+.editor-divider:focus-visible .editor-divider-handle,
+.editor-divider.is-dragging .editor-divider-handle {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/* 드래그 중 iframe, 텍스트 선택 방지 */
+body.editor-resizing {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+body.editor-resizing * {
+  cursor: col-resize !important;
+}
+
+/* ==================================================
+   Preview Off
+================================================== */
+
+.editor-main.preview-off .preview-pane {
+  display: none;
+}
+
+.editor-main.preview-off .editor-divider {
+  display: none;
+}
+
+.editor-main.preview-off .editor-pane {
+  flex: 1 1 auto !important;
+  min-width: 0;
+}
+
+/* 작은 화면에서는 최소폭을 조금 줄임 */
+@media (max-width: 900px) {
+  .editor-pane,
+  .preview-pane {
+    min-width: 200px;
+  }
 }
 
 #markdownEditor {
   display: none;
-}
-
-.preview-pane {
-  background: #e5e5e5;
-  overflow: auto;
 }
 
 .manual-preview {
@@ -117,15 +211,6 @@ body {
   justify-content: space-between;
   padding: 0 10px;
   box-sizing: border-box;
-}
-
-/* Preview Toggle */
-.editor-main.preview-off .preview-pane {
-  display: none;
-}
-
-.editor-main.preview-off .editor-pane {
-  border-right: 0;
 }
 
 /* CodeMirror */
@@ -306,4 +391,125 @@ body {
 .manual-numbered-content > table,
 .manual-numbered-content > .manual-subheading {
   margin-left: var(--heading-number-width);
+}
+
+.export-wrap {
+  position: relative;
+  display: inline-flex;
+  margin-left: 14px;
+}
+
+.export-main,
+.export-toggle {
+  height: 32px;
+  border: 1px solid #3c4657;
+  background: #242b36;
+  color: #e9edf5;
+  font: inherit;
+  cursor: pointer;
+}
+
+.export-main {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  border-radius: 5px 0 0 5px;
+}
+
+.export-toggle {
+  width: 28px;
+  padding: 0;
+  border-left: 0;
+  border-radius: 0 5px 5px 0;
+  color: #9ba8bc;
+}
+
+.export-main:hover,
+.export-toggle:hover {
+  background: #303949;
+  border-color: #536179;
+}
+
+.export-icon {
+  font-size: 15px;
+  color: #a9c7ff;
+}
+
+.export-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  z-index: 1000;
+  width: 260px;
+  padding: 6px;
+  border: 1px solid #3b4555;
+  border-radius: 8px;
+  background: #202630;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.export-menu.is-open {
+  display: block;
+}
+
+.export-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #edf1f7;
+  text-align: left;
+  cursor: pointer;
+}
+
+.export-option:hover {
+  background: #2b3442;
+}
+
+.option-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 5px;
+  background: #303a49;
+  color: #aac7ff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.option-text strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.option-text small {
+  color: #8f9bae;
+  font-size: 11px;
+}
+
+.export-divider {
+  height: 1px;
+  margin: 5px 7px;
+  background: #343d4a;
+}
+
+.export-option.compact {
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
