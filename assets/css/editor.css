@@ -313,6 +313,7 @@ body.editor-resizing * {
   overflow: hidden;
   background: #fff;
   --heading-number-width: 64px;
+  line-height: 1.6;
 }
 
 .preview-page-number {
@@ -348,9 +349,9 @@ body.editor-resizing * {
 
 .page blockquote {
   margin: 12px 0;
-  padding: 8px 12px;
-  border-left: 4px solid #9ca3af;
-  background: #f3f4f6;
+  padding: 0px 12px;
+  border-left: 6px solid #008f64;
+  background: #ffffff;
   color: #374151;
 }
 
@@ -359,19 +360,20 @@ body.editor-resizing * {
 }
 
 .page :not(pre) > code {
-  padding: 2px 5px;
-  border-radius: 4px;
-  background: #f1f3f5;
-  color: #c92a2a;
-  font-family: "Cascadia Code", monospace;
-  font-size: 0.92em;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: #f5f4ee;
+  color: #008f64;
+  font-family: Arial, "Nanum Gothic", monospace;
+  font-size: 16px;
+  font-weight: 400;
 }
 
 .page pre {
   margin: 14px 0;
   padding: 14px 16px;
   border-radius: 6px;
-  background: #f6f8fa;
+  background: #f5f4ee;
   overflow-x: auto;
   line-height: 1.55;
 }
@@ -380,9 +382,9 @@ body.editor-resizing * {
   padding: 0;
   border-radius: 0;
   background: transparent;
-  color: #24292f;
-  font-family: "Cascadia Code", monospace;
-  font-size: 12px;
+  color: #008f64;
+  font-family: Arial, "Nanum Gothic", monospace;
+  font-size: 16px;
 }
 
 .page ul,
