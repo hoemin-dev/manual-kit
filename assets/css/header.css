@@ -21,6 +21,10 @@
     margin-right: 8px;
 }
 
+.company-logo {
+    width: 4%;
+}
+
 .menu {
     position: relative;
     height: 100%;

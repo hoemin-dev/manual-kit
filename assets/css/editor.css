@@ -120,7 +120,7 @@ body {
   width: 7px;
   height: 100%;
   cursor: col-resize;
-  background: #252b34;
+  background: #424c5c;
   user-select: none;
   touch-action: none;
   z-index: 30;
@@ -142,18 +142,27 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 3px;
-  height: 42px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.28);
+
+  width: 12px;          /* 기존보다 굵게 */
+  height: 52px;
+
+  border-radius: 4px;
+  background: #616f86;
+  border: 1px solid rgba(0,0,0,.18);
+  box-sizing: border-box;
+
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
-.editor-divider:hover .editor-divider-handle,
-.editor-divider:focus-visible .editor-divider-handle,
-.editor-divider.is-dragging .editor-divider-handle {
-  background: rgba(255, 255, 255, 0.85);
+.editor-divider-handle::before {
+  content: "";
+  position: absolute;
+  inset: 4px 0;
+
+  background:
+  linear-gradient(#434c58,#434c58) 3px center / 1.6px 100% no-repeat,
+  linear-gradient(#434c58,#434c58) calc(100% - 3px) center / 1.6px 100% no-repeat;
 }
 
 /* 드래그 중 iframe, 텍스트 선택 방지 */
@@ -302,20 +311,6 @@ body.editor-resizing * {
   font-size: 16px;
 }
 
-.preview blockquote,
-.manual-page blockquote {
-  margin: 12px 0;
-  padding: 8px 12px;
-  border-left: 4px solid #9ca3af;
-  background: #f3f4f6;
-  color: #374151;
-}
-
-.preview blockquote p,
-.manual-page blockquote p {
-  margin: 0;
-}
-
 /* Main content area */
 .page-view {
   width: 170mm;
@@ -359,6 +354,56 @@ body.editor-resizing * {
 
 .page p {
   margin: 0 0 0.75em;
+}
+
+.page blockquote {
+  margin: 12px 0;
+  padding: 8px 12px;
+  border-left: 4px solid #9ca3af;
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.page blockquote p {
+  margin: 0;
+}
+
+.page :not(pre) > code {
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #f1f3f5;
+  color: #c92a2a;
+  font-family: "Cascadia Code", monospace;
+  font-size: 0.92em;
+}
+
+.page pre {
+  margin: 14px 0;
+  padding: 14px 16px;
+  border-radius: 6px;
+  background: #f6f8fa;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+
+.page pre code {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #24292f;
+  font-family: "Cascadia Code", monospace;
+  font-size: 12px;
+}
+
+.page ul,
+.page ol {
+  padding-left: 1.5em;
+}
+
+.page li > ul,
+.page li > ol {
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 .manual-heading {
@@ -512,4 +557,65 @@ body.editor-resizing * {
 .export-option.compact {
   padding-top: 8px;
   padding-bottom: 8px;
+}
+
+/* CodeMirror 세로 스크롤바 */
+.CodeMirror-vscrollbar::-webkit-scrollbar {
+  width: 16px;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
+  background: #64748b;
+  border-radius: 6px;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/* CodeMirror 가로 스크롤바 */
+.CodeMirror-hscrollbar::-webkit-scrollbar {
+  height: 10px;
+}
+
+.CodeMirror-hscrollbar::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.CodeMirror-hscrollbar::-webkit-scrollbar-thumb {
+  background: #64748b;
+  border-radius: 6px;
+}
+
+.CodeMirror-hscrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/* 오른쪽 아래 스크롤바 교차 영역 */
+.CodeMirror-scrollbar-filler {
+  background: #1f2937;
+}
+
+.preview-pane::-webkit-scrollbar {
+    width: 16px;
+    height: 10px;
+}
+
+.preview-pane::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+.preview-pane::-webkit-scrollbar-thumb {
+    background: #64748b;
+    border-radius: 6px;
+}
+
+.preview-pane::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
