@@ -323,7 +323,7 @@ body.editor-resizing * {
 .preview-page-number {
   margin-top: 2px;
   text-align: center;
-  font-size: 11px;
+  font-size: 14px;
   color: #888;
   user-select: none;
 }
@@ -419,6 +419,11 @@ body.editor-resizing * {
   grid-template-columns: var(--heading-number-width) minmax(0, 1fr);
   column-gap: var(--heading-column-gap);
   align-items: baseline;
+}
+
+.page > h1:not(.manual-heading),
+.page > h2:not(.manual-heading) {
+  margin-left: var(--content-indent);
 }
 
 .manual-heading-title {
