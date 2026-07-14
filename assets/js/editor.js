@@ -24,6 +24,7 @@ const md = window.markdownit({
 });
 
 md.use(window.markdownItKatexPlugin); //katex
+md.use(window.markdownItTaskList); //checklist
 
 //==================================================
 // CodeMirror
