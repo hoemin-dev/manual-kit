@@ -6,6 +6,7 @@ function renderManualMarkdown(source, md) {
 
   const numbering = {
     chapter: null,
+    enabled: false,
     h2: 0,
     h3: 0,
     h4: 0,
@@ -17,7 +18,6 @@ function renderManualMarkdown(source, md) {
     .map((page, index) => {
       const processed = preprocessManualMarkdown(page.trim(), md, numbering);
       const content = md.render(processed);
-      const isNumbered = numbering.chapter !== null;
 
       return `
         <div class="page-view">
@@ -62,49 +62,57 @@ function preprocessManualMarkdown(source, md, numbering) {
 
     //================================================
     // %chapter 4
+    // - 새로운 챕터: 번호 초기화 후 번호 모드 시작
+    // - 같은 챕터 재선언: 기존 번호를 유지한 채 번호 모드 재개
     //================================================
 
     const chapterMatch = trimmed.match(/^%chapter\s+([0-9]+)\s*$/i);
 
     if (chapterMatch) {
-      numbering.chapter = chapterMatch[1];
+      const nextChapter = chapterMatch[1];
+      const isNewChapter = numbering.chapter !== nextChapter;
 
-      numbering.h2 = 0;
-      numbering.h3 = 0;
-      numbering.h4 = 0;
-      numbering.h5 = 0;
-      numbering.h6 = 0;
+      if (isNewChapter) {
+        numbering.chapter = nextChapter;
+        resetManualHeadingNumbers(numbering);
+      }
+
+      numbering.enabled = true;
 
       // %chapter 줄 자체는 출력하지 않음
       continue;
     }
 
     //================================================
-    // %sub single shot
+    // %sub
+    // - 이후 Markdown 제목의 번호 출력을 중지
+    // - 같은 %chapter 번호를 다시 쓰면 카운터를 유지한 채 재개
     //================================================
 
-    const subMatch = trimmed.match(/^%sub\s+(.+)$/i);
+    if (/^%sub\s*$/i.test(trimmed)) {
+      numbering.enabled = false;
 
-    if (subMatch) {
-      const title = md.renderInline(subMatch[1].trim());
-
-      output.push(
-        `<div class="manual-subheading">${title}</div>`
-      );
-
+      // %sub 줄 자체는 출력하지 않음
       continue;
     }
 
     //================================================
-    // 번호가 붙는 Markdown 제목
+    // Markdown 제목
+    // - 번호 모드에서는 번호 계산 및 출력
+    // - %sub 이후에는 번호와 카운터를 건드리지 않음
+    // - 번호가 없어도 번호 영역은 비워 두어 정렬 유지
     //================================================
 
     const headingMatch = originalLine.match(/^(#{1,6})\s+(.+?)\s*$/);
 
-    if (headingMatch && numbering.chapter !== null) {
+    if (headingMatch) {
       const level = headingMatch[1].length;
       const title = md.renderInline(headingMatch[2].trim());
-      const number = getManualHeadingNumber(level, numbering);
+      const shouldNumber =
+        numbering.enabled && numbering.chapter !== null;
+      const number = shouldNumber
+        ? getManualHeadingNumber(level, numbering)
+        : "";
 
       output.push(
         `<h${level} class="manual-heading manual-heading-${level}">` +
@@ -112,6 +120,8 @@ function preprocessManualMarkdown(source, md, numbering) {
           `<span class="manual-heading-title">${title}</span>` +
         `</h${level}>`
       );
+
+      output.push("");
 
       continue;
     }
@@ -124,6 +134,19 @@ function preprocessManualMarkdown(source, md, numbering) {
 
 
 //==================================================
+// 제목 번호 초기화
+//==================================================
+
+function resetManualHeadingNumbers(numbering) {
+  numbering.h2 = 0;
+  numbering.h3 = 0;
+  numbering.h4 = 0;
+  numbering.h5 = 0;
+  numbering.h6 = 0;
+}
+
+
+//==================================================
 // 제목 번호 계산
 //==================================================
 
@@ -132,12 +155,7 @@ function getManualHeadingNumber(level, numbering) {
 
   // # 제목은 chapter 번호 자체
   if (level === 1) {
-    numbering.h2 = 0;
-    numbering.h3 = 0;
-    numbering.h4 = 0;
-    numbering.h5 = 0;
-    numbering.h6 = 0;
-
+    resetManualHeadingNumbers(numbering);
     return chapter;
   }
 

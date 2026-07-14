@@ -368,6 +368,8 @@ async function loadToolbar() {
     }
 
     mount.innerHTML = await response.text();
+
+    document.dispatchEvent(new CustomEvent("toolbarLoaded"));
   } catch (error) {
     console.error(error);
     mount.innerHTML = `

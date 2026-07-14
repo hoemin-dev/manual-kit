@@ -23,6 +23,8 @@ const md = window.markdownit({
   breaks: false,
 });
 
+md.use(window.markdownItKatexPlugin); //katex
+
 //==================================================
 // CodeMirror
 //==================================================

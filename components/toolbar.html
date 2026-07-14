@@ -60,6 +60,24 @@
   <div class="toolbar-group">
     <button
       type="button"
+      class="toolbar-button"
+      id="toolbarFind"
+      title="현재 문서에서 찾기 (Ctrl+F)"
+      aria-expanded="false"
+      aria-controls="toolbarSearchPanel"
+    >
+      <span class="toolbar-icon" aria-hidden="true">⌕</span>
+      <span>Find</span>
+    </button>
+  </div>
+
+  <div id="searchMount"></div>
+
+  <div class="toolbar-separator" aria-hidden="true"></div>
+
+  <div class="toolbar-group">
+    <button
+      type="button"
       class="toolbar-button is-active"
       id="toolbarPreview"
       title="미리보기 표시 또는 숨기기"
