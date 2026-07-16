@@ -5,60 +5,58 @@
 .format-toolbar {
   height: 34px;
   min-height: 34px;
+
   display: flex;
   align-items: center;
-  gap: 2px;
+
   padding: 0 8px;
-  background: #20242b;
+
+  background: #20242b;        
   border-bottom: 1px solid #363b45;
+
   color: #d8d8d8;
+
   position: relative;
   z-index: 40;
+
   user-select: none;
-  overflow: visible;
 }
 
 .format-toolbar-group {
   height: 100%;
+
   display: flex;
   align-items: center;
-  gap: 1px;
-  position: relative;
-}
 
-.format-toolbar-separator {
-  width: 1px;
-  height: 18px;
-  margin: 0 4px;
-  background: #3b414b;
+  position: relative;
 }
 
 .format-toolbar-button {
   height: 26px;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
-  padding: 0 9px;
+
+  padding: 0 10px;
+
   border: 1px solid transparent;
   border-radius: 3px;
+
   background: transparent;
   color: #d8d8d8;
+
   font-family: inherit;
   font-size: 12px;
-  line-height: 1;
+
   cursor: pointer;
 }
 
 .format-toolbar-button:hover,
-.format-toolbar-button.is-open,
-.format-toolbar-button.is-active {
-  background: #323842;
-  border-color: #47505d;
-}
-
-.format-toolbar-button:active {
-  background: #3a414c;
+.format-toolbar-button.is-open {
+  background: #474747;
+  border-color: #555;
 }
 
 .format-toolbar-button:focus-visible {
@@ -71,24 +69,11 @@
   justify-content: space-between;
 }
 
-.format-icon-button {
-  min-width: 28px;
-  padding: 0 7px;
-  font-size: 13px;
-}
-
-.format-text-button {
-  min-width: 42px;
-}
-
-.format-strike-icon {
-  text-decoration: line-through;
-}
-
 .format-toolbar-arrow {
   color: #a8a8a8;
   font-size: 10px;
 }
+
 
 /* ==================================================
    Dropdown Menu
@@ -96,16 +81,21 @@
 
 .format-toolbar-menu {
   width: 190px;
+
   position: absolute;
   top: calc(100% - 1px);
   left: 0;
+
   padding: 5px;
+
   background: #2f2f2f;
   border: 1px solid #505050;
   border-radius: 4px;
+
   box-shadow:
     0 5px 14px rgba(0, 0, 0, 0.28),
     0 1px 3px rgba(0, 0, 0, 0.4);
+
   z-index: 100;
 }
 
@@ -116,17 +106,23 @@
 .format-toolbar-menu button {
   width: 100%;
   min-height: 30px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 0 9px;
+
   border: 0;
   border-radius: 3px;
+
   background: transparent;
   color: #dadada;
+
   font-family: inherit;
   font-size: 12px;
   text-align: left;
+
   cursor: pointer;
 }
 
@@ -142,24 +138,17 @@
 
 .format-heading-mark {
   margin-left: 12px;
+
   color: #8f8f8f;
+
   font-family: Consolas, "Courier New", monospace;
   font-size: 11px;
 }
 
 .format-toolbar-menu-divider {
   height: 1px;
+
   margin: 5px 4px;
+
   background: #4b4b4b;
-}
-
-@media (max-width: 980px) {
-  .format-text-button {
-    min-width: 32px;
-    padding: 0 6px;
-  }
-
-  .format-toolbar-separator {
-    margin: 0 2px;
-  }
 }

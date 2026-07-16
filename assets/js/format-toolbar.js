@@ -4,17 +4,12 @@
   let formatToolbarEditor = null;
   let formatToolbarInitialized = false;
 
-  /**
-   * 포맷 툴바 초기화
-   *
-   * 사용:
-   * initFormatToolbar(cm);
-   */
   function initFormatToolbar(codeMirrorInstance) {
     const headingButton = document.getElementById("formatHeadingButton");
     const headingMenu = document.getElementById("formatHeadingMenu");
+    const toolbar = document.getElementById("formatToolbar");
 
-    if (!headingButton || !headingMenu) {
+    if (!headingButton || !headingMenu || !toolbar) {
       console.warn("[Format Toolbar] 툴바 HTML을 찾을 수 없습니다.");
       return;
     }
@@ -26,7 +21,6 @@
 
     formatToolbarEditor = codeMirrorInstance;
 
-    // HTML을 다시 로드하는 경우 중복 이벤트 방지
     if (formatToolbarInitialized) {
       return;
     }
@@ -45,16 +39,23 @@
         return;
       }
 
-      const level = Number(menuItem.dataset.headingLevel);
-
-      applyHeading(level);
+      applyHeading(Number(menuItem.dataset.headingLevel));
       closeHeadingMenu();
     });
 
-    document.addEventListener("click", function (event) {
-      const toolbar = document.getElementById("formatToolbar");
+    toolbar.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-format-action]");
 
-      if (toolbar && !toolbar.contains(event.target)) {
+      if (!button) {
+        return;
+      }
+
+      const action = button.dataset.formatAction;
+      applyFormatAction(action);
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!toolbar.contains(event.target)) {
         closeHeadingMenu();
       }
     });
@@ -65,15 +66,14 @@
       }
     });
 
-    formatToolbarEditor.on("cursorActivity", updateHeadingLabel);
-    formatToolbarEditor.on("change", updateHeadingLabel);
+    formatToolbarEditor.on("cursorActivity", updateToolbarState);
+    formatToolbarEditor.on("change", updateToolbarState);
 
-    updateHeadingLabel();
+    updateToolbarState();
   }
 
-
   // ==================================================
-  // Heading Menu
+  // Menu
   // ==================================================
 
   function toggleHeadingMenu() {
@@ -116,53 +116,295 @@
     button.setAttribute("aria-expanded", "false");
   }
 
-
   // ==================================================
-  // Heading 적용
+  // Actions
   // ==================================================
 
-  function applyHeading(level) {
+  function applyFormatAction(action) {
     const cm = formatToolbarEditor;
 
     if (!cm) {
       return;
     }
 
+    switch (action) {
+      case "bold":
+        wrapSelection("**", "**", "bold text");
+        break;
+
+      case "italic":
+        wrapSelection("*", "*", "italic text");
+        break;
+
+      case "strike":
+        wrapSelection("~~", "~~", "strikethrough");
+        break;
+
+      case "inline-code":
+        wrapSelection("`", "`", "code");
+        break;
+
+      case "bullet":
+        toggleLinePrefix("bullet");
+        break;
+
+      case "number":
+        toggleLinePrefix("number");
+        break;
+
+      case "task":
+        toggleLinePrefix("task");
+        break;
+
+      case "quote":
+        toggleLinePrefix("quote");
+        break;
+
+      case "code-block":
+        insertCodeBlock();
+        break;
+
+      case "link":
+        insertLink();
+        break;
+
+      case "image":
+        insertImage();
+        break;
+
+      default:
+        return;
+    }
+
+    cm.focus();
+    updateToolbarState();
+  }
+
+  function wrapSelection(openMarker, closeMarker, placeholder) {
+    const cm = formatToolbarEditor;
     const selections = cm.listSelections();
 
     cm.operation(function () {
-      // 아래쪽 선택 영역부터 처리해야 줄 위치가 밀리지 않는다.
-      const sortedSelections = selections
-        .map(function (selection) {
-          return {
-            fromLine: Math.min(selection.anchor.line, selection.head.line),
-            toLine: Math.max(selection.anchor.line, selection.head.line)
-          };
+      selections
+        .slice()
+        .sort(function (a, b) {
+          const aStart = Math.min(a.anchor.line, a.head.line);
+          const bStart = Math.min(b.anchor.line, b.head.line);
+          return bStart - aStart;
         })
+        .forEach(function (selection) {
+          const from = minPos(selection.anchor, selection.head);
+          const to = maxPos(selection.anchor, selection.head);
+          const selectedText = cm.getRange(from, to);
+
+          if (selectedText) {
+            const hasMarkers =
+              selectedText.startsWith(openMarker) &&
+              selectedText.endsWith(closeMarker) &&
+              selectedText.length >= openMarker.length + closeMarker.length;
+
+            if (hasMarkers) {
+              const unwrapped = selectedText.slice(
+                openMarker.length,
+                selectedText.length - closeMarker.length
+              );
+              cm.replaceRange(unwrapped, from, to);
+              cm.setSelection(
+                from,
+                advancePosition(from, unwrapped)
+              );
+            } else {
+              const wrapped = openMarker + selectedText + closeMarker;
+              cm.replaceRange(wrapped, from, to);
+              cm.setSelection(
+                advancePosition(from, openMarker),
+                advancePosition(from, openMarker + selectedText)
+              );
+            }
+          } else {
+            const inserted = openMarker + placeholder + closeMarker;
+            cm.replaceRange(inserted, from);
+            cm.setSelection(
+              advancePosition(from, openMarker),
+              advancePosition(from, openMarker + placeholder)
+            );
+          }
+        });
+    });
+  }
+
+  function toggleLinePrefix(type) {
+    const cm = formatToolbarEditor;
+    const ranges = getSelectedLineRanges(cm);
+
+    cm.operation(function () {
+      ranges
+        .slice()
         .sort(function (a, b) {
           return b.fromLine - a.fromLine;
-        });
+        })
+        .forEach(function (range) {
+          const lines = [];
 
-      const processedLines = new Set();
-
-      sortedSelections.forEach(function (selection) {
-        for (
-          let lineNumber = selection.toLine;
-          lineNumber >= selection.fromLine;
-          lineNumber -= 1
-        ) {
-          if (processedLines.has(lineNumber)) {
-            continue;
+          for (let lineNumber = range.fromLine; lineNumber <= range.toLine; lineNumber += 1) {
+            lines.push(cm.getLine(lineNumber) || "");
           }
 
-          processedLines.add(lineNumber);
-          replaceHeadingOnLine(cm, lineNumber, level);
-        }
-      });
+          const allAlreadySame = lines.every(function (line) {
+            return lineMatchesType(line, type);
+          });
+
+          lines.forEach(function (line, index) {
+            const lineNumber = range.fromLine + index;
+            const transformed = transformLinePrefix(
+              line,
+              type,
+              allAlreadySame,
+              index
+            );
+
+            cm.replaceRange(
+              transformed,
+              { line: lineNumber, ch: 0 },
+              { line: lineNumber, ch: line.length }
+            );
+          });
+        });
+    });
+  }
+
+  function lineMatchesType(line, type) {
+    switch (type) {
+      case "bullet":
+        return /^\s*[-*+]\s+/.test(line) && !/^\s*[-*+]\s+\[[ xX]\]\s+/.test(line);
+      case "number":
+        return /^\s*\d+[.)]\s+/.test(line);
+      case "task":
+        return /^\s*[-*+]\s+\[[ xX]\]\s+/.test(line);
+      case "quote":
+        return /^\s*>\s?/.test(line);
+      default:
+        return false;
+    }
+  }
+
+  function transformLinePrefix(line, type, removeMode, index) {
+    const indentation = (line.match(/^\s*/) || [""])[0];
+    let content = line.slice(indentation.length);
+
+    content = content
+      .replace(/^>\s?/, "")
+      .replace(/^[-*+]\s+\[[ xX]\]\s+/, "")
+      .replace(/^[-*+]\s+/, "")
+      .replace(/^\d+[.)]\s+/, "");
+
+    if (removeMode) {
+      return indentation + content;
+    }
+
+    switch (type) {
+      case "bullet":
+        return indentation + "- " + content;
+      case "number":
+        return indentation + String(index + 1) + ". " + content;
+      case "task":
+        return indentation + "- [ ] " + content;
+      case "quote":
+        return indentation + "> " + content;
+      default:
+        return line;
+    }
+  }
+
+  function insertCodeBlock() {
+    const cm = formatToolbarEditor;
+    const from = cm.getCursor("from");
+    const to = cm.getCursor("to");
+    const selectedText = cm.getRange(from, to);
+
+    if (selectedText) {
+      const block = "```\n" + selectedText + "\n```";
+      cm.replaceRange(block, from, to);
+      cm.setSelection(
+        advancePosition(from, "```\n"),
+        advancePosition(from, "```\n" + selectedText)
+      );
+      return;
+    }
+
+    const block = "```\ncode\n```";
+    cm.replaceRange(block, from);
+    cm.setSelection(
+      advancePosition(from, "```\n"),
+      advancePosition(from, "```\ncode")
+    );
+  }
+
+  function insertLink() {
+    const cm = formatToolbarEditor;
+    const from = cm.getCursor("from");
+    const to = cm.getCursor("to");
+    const selectedText = cm.getRange(from, to);
+    const label = selectedText || "link text";
+    const markdown = "[" + label + "](https://)";
+
+    cm.replaceRange(markdown, from, to);
+
+    if (selectedText) {
+      const urlStart = advancePosition(from, "[" + label + "](");
+      cm.setSelection(urlStart, advancePosition(urlStart, "https://"));
+    } else {
+      cm.setSelection(
+        advancePosition(from, "["),
+        advancePosition(from, "[" + label)
+      );
+    }
+  }
+
+  function insertImage() {
+    const cm = formatToolbarEditor;
+    const from = cm.getCursor("from");
+    const to = cm.getCursor("to");
+    const selectedText = cm.getRange(from, to);
+    const alt = selectedText || "image description";
+    const markdown = "![" + alt + "](image.png)";
+
+    cm.replaceRange(markdown, from, to);
+
+    if (selectedText) {
+      const pathStart = advancePosition(from, "![" + alt + "](");
+      cm.setSelection(pathStart, advancePosition(pathStart, "image.png"));
+    } else {
+      cm.setSelection(
+        advancePosition(from, "!["),
+        advancePosition(from, "![" + alt)
+      );
+    }
+  }
+
+  // ==================================================
+  // Heading
+  // ==================================================
+
+  function applyHeading(level) {
+    const cm = formatToolbarEditor;
+    const ranges = getSelectedLineRanges(cm);
+
+    cm.operation(function () {
+      ranges
+        .slice()
+        .sort(function (a, b) {
+          return b.fromLine - a.fromLine;
+        })
+        .forEach(function (range) {
+          for (let lineNumber = range.toLine; lineNumber >= range.fromLine; lineNumber -= 1) {
+            replaceHeadingOnLine(cm, lineNumber, level);
+          }
+        });
     });
 
     cm.focus();
-    updateHeadingLabel();
+    updateToolbarState();
   }
 
   function replaceHeadingOnLine(cm, lineNumber, level) {
@@ -172,14 +414,6 @@
       return;
     }
 
-    /*
-     * 지원 형태:
-     * # 제목
-     *   ## 제목
-     * ###제목
-     *
-     * 기존 제목 기호와 뒤쪽 공백을 제거한다.
-     */
     const headingPattern = /^(\s{0,3})#{1,6}(?:[ \t]+|(?=\S)|$)/;
     const match = lineText.match(headingPattern);
 
@@ -195,33 +429,25 @@
       content = lineText.slice(indentation.length);
     }
 
-    // Normal Text
-    if (level === 0) {
-      const normalLine = indentation + content;
-
-      cm.replaceRange(
-        normalLine,
-        { line: lineNumber, ch: 0 },
-        { line: lineNumber, ch: lineText.length }
-      );
-
-      return;
-    }
-
-    const headingPrefix = "#".repeat(level) + " ";
-    const headingLine = indentation + headingPrefix + content;
+    const nextLine =
+      level === 0
+        ? indentation + content
+        : indentation + "#".repeat(level) + " " + content;
 
     cm.replaceRange(
-      headingLine,
+      nextLine,
       { line: lineNumber, ch: 0 },
       { line: lineNumber, ch: lineText.length }
     );
   }
 
+  // ==================================================
+  // State
+  // ==================================================
 
-  // ==================================================
-  // 현재 제목 상태 표시
-  // ==================================================
+  function updateToolbarState() {
+    updateHeadingLabel();
+  }
 
   function updateHeadingLabel() {
     const cm = formatToolbarEditor;
@@ -235,15 +461,59 @@
     const lineText = cm.getLine(cursor.line) || "";
     const headingMatch = lineText.match(/^\s{0,3}(#{1,6})(?:\s+|$)/);
 
-    if (!headingMatch) {
-      label.textContent = "Heading";
-      return;
-    }
-
-    label.textContent = "H" + headingMatch[1].length;
+    label.textContent = headingMatch
+      ? "H" + headingMatch[1].length
+      : "Heading";
   }
 
+  // ==================================================
+  // Helpers
+  // ==================================================
 
-  // 전역에서 사용할 수 있도록 공개
+  function getSelectedLineRanges(cm) {
+    return cm.listSelections().map(function (selection) {
+      let fromLine = Math.min(selection.anchor.line, selection.head.line);
+      let toLine = Math.max(selection.anchor.line, selection.head.line);
+
+      if (
+        selection.anchor.line !== selection.head.line &&
+        selection.head.ch === 0 &&
+        selection.head.line === toLine
+      ) {
+        toLine -= 1;
+      }
+
+      return { fromLine: fromLine, toLine: Math.max(fromLine, toLine) };
+    });
+  }
+
+  function minPos(a, b) {
+    if (a.line < b.line) return a;
+    if (a.line > b.line) return b;
+    return a.ch <= b.ch ? a : b;
+  }
+
+  function maxPos(a, b) {
+    if (a.line > b.line) return a;
+    if (a.line < b.line) return b;
+    return a.ch >= b.ch ? a : b;
+  }
+
+  function advancePosition(start, text) {
+    const parts = text.split("\n");
+
+    if (parts.length === 1) {
+      return {
+        line: start.line,
+        ch: start.ch + text.length
+      };
+    }
+
+    return {
+      line: start.line + parts.length - 1,
+      ch: parts[parts.length - 1].length
+    };
+  }
+
   window.initFormatToolbar = initFormatToolbar;
 })();
