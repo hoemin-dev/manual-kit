@@ -39,6 +39,10 @@ const cm = CodeMirror.fromTextArea(textarea, {
   theme: "material-darker",
 });
 
+loadFormatToolbar().then(function () {
+  initFormatToolbar(cm);
+});
+
 // 다른 컴포넌트에서 현재 CodeMirror를 사용할 수 있게 공개
 window.manualEditor = cm;
 window.editor = cm;
@@ -283,6 +287,26 @@ document.addEventListener("toolbarLoaded", () => {
 
   previewButton.addEventListener("click", togglePreview);
 });
+
+//==================================================
+// Format-Toolbar Events
+//==================================================
+
+async function loadFormatToolbar() {
+  const mount = document.getElementById("formatToolbarMount");
+
+  if (!mount) {
+    return;
+  }
+
+  const response = await fetch("components/format-toolbar.html");
+
+  if (!response.ok) {
+    throw new Error("format-toolbar.html 로드 실패");
+  }
+
+  mount.innerHTML = await response.text();
+}
 
 //==================================================
 // External File Open

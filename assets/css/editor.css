@@ -553,7 +553,8 @@ body.editor-resizing * {
 .page > ol,
 .page > blockquote,
 .page > pre,
-.page > table {
+.page > table
+.page > hr  {
   margin-left: var(--content-indent);
 }
 
