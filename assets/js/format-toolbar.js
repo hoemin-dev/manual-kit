@@ -181,57 +181,120 @@
   }
 
   function wrapSelection(openMarker, closeMarker, placeholder) {
-    const cm = formatToolbarEditor;
-    const selections = cm.listSelections();
+  const cm = formatToolbarEditor;
+  const selections = cm.listSelections();
 
-    cm.operation(function () {
-      selections
-        .slice()
-        .sort(function (a, b) {
-          const aStart = Math.min(a.anchor.line, a.head.line);
-          const bStart = Math.min(b.anchor.line, b.head.line);
+  cm.operation(function () {
+    selections
+      .slice()
+      .sort(function (a, b) {
+        const aStart = Math.min(a.anchor.line, a.head.line);
+        const bStart = Math.min(b.anchor.line, b.head.line);
+
+        if (aStart !== bStart) {
           return bStart - aStart;
-        })
-        .forEach(function (selection) {
-          const from = minPos(selection.anchor, selection.head);
-          const to = maxPos(selection.anchor, selection.head);
-          const selectedText = cm.getRange(from, to);
+        }
 
-          if (selectedText) {
-            const hasMarkers =
-              selectedText.startsWith(openMarker) &&
-              selectedText.endsWith(closeMarker) &&
-              selectedText.length >= openMarker.length + closeMarker.length;
+        return Math.max(b.anchor.ch, b.head.ch) -
+          Math.max(a.anchor.ch, a.head.ch);
+      })
+      .forEach(function (selection) {
+        const from = minPos(selection.anchor, selection.head);
+        const to = maxPos(selection.anchor, selection.head);
+        const selectedText = cm.getRange(from, to);
 
-            if (hasMarkers) {
-              const unwrapped = selectedText.slice(
-                openMarker.length,
-                selectedText.length - closeMarker.length
-              );
-              cm.replaceRange(unwrapped, from, to);
-              cm.setSelection(
-                from,
-                advancePosition(from, unwrapped)
-              );
-            } else {
-              const wrapped = openMarker + selectedText + closeMarker;
-              cm.replaceRange(wrapped, from, to);
-              cm.setSelection(
-                advancePosition(from, openMarker),
-                advancePosition(from, openMarker + selectedText)
-              );
-            }
-          } else {
-            const inserted = openMarker + placeholder + closeMarker;
-            cm.replaceRange(inserted, from);
-            cm.setSelection(
-              advancePosition(from, openMarker),
-              advancePosition(from, openMarker + placeholder)
+        // 선택 영역이 있는 경우
+        if (selectedText) {
+          const outerFrom = {
+            line: from.line,
+            ch: Math.max(0, from.ch - openMarker.length)
+          };
+
+          const outerTo = {
+            line: to.line,
+            ch: to.ch + closeMarker.length
+          };
+
+          const beforeMarker =
+            from.ch >= openMarker.length
+              ? cm.getRange(outerFrom, from)
+              : "";
+
+          const afterMarker =
+            cm.getRange(to, outerTo);
+
+          // 현재 선택 영역 바깥에 마커가 있으면 제거
+          if (
+            beforeMarker === openMarker &&
+            afterMarker === closeMarker
+          ) {
+            cm.replaceRange("", to, outerTo);
+            cm.replaceRange("", outerFrom, from);
+
+            const unwrappedFrom = outerFrom;
+            const unwrappedTo = advancePosition(
+              unwrappedFrom,
+              selectedText
             );
+
+            cm.setSelection(unwrappedFrom, unwrappedTo);
+            return;
           }
-        });
-    });
-  }
+
+          // 선택 자체에 마커가 포함된 경우도 제거
+          if (
+            selectedText.startsWith(openMarker) &&
+            selectedText.endsWith(closeMarker) &&
+            selectedText.length >=
+              openMarker.length + closeMarker.length
+          ) {
+            const innerText = selectedText.slice(
+              openMarker.length,
+              selectedText.length - closeMarker.length
+            );
+
+            cm.replaceRange(innerText, from, to);
+            cm.setSelection(
+              from,
+              advancePosition(from, innerText)
+            );
+
+            return;
+          }
+
+          // 마커가 없으면 새로 감싸기
+          const wrapped =
+            openMarker + selectedText + closeMarker;
+
+          cm.replaceRange(wrapped, from, to);
+
+          cm.setSelection(
+            advancePosition(from, openMarker),
+            advancePosition(
+              from,
+              openMarker + selectedText
+            )
+          );
+
+          return;
+        }
+
+        // 선택 영역이 없는 경우
+        const inserted =
+          openMarker + placeholder + closeMarker;
+
+        cm.replaceRange(inserted, from);
+
+        cm.setSelection(
+          advancePosition(from, openMarker),
+          advancePosition(
+            from,
+            openMarker + placeholder
+          )
+        );
+      });
+  });
+}
 
   function toggleLinePrefix(type) {
     const cm = formatToolbarEditor;
