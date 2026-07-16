@@ -414,33 +414,63 @@ body.editor-resizing * {
   font-size: 0.9em;
 }
 
+/* Task List */
 .page .contains-task-list {
   list-style: none;
   padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .page .task-list-item {
   list-style: none;
-  position: relative;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .page .task-list-item-checkbox {
-  width: 14px;
-  height: 14px;
+  appearance: none;
+  -webkit-appearance: none;
+
+  display: inline-block;
+
+  width: 18px;
+  height: 18px;
+
   margin: 0 7px 0 0;
-  vertical-align: -2px;
-  accent-color: #2563eb;
+  top: 2.8px;
+
+  border: 1.5px solid #7a7a7a4f;
+  border-radius: 1px;
+  background: #e8fcef;
+
+  position: relative;
+  opacity: 1;
 }
 
+/* 체크 표시 */
+.page .task-list-item-checkbox:checked::after {
+  content: "✓";
+
+  position: absolute;
+  top: -6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #009148;
+  font-size: 24px;
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+/* disabled여도 흐리지 않음 */
 .page .task-list-item-checkbox:disabled {
   opacity: 1;
-  cursor: default;
 }
 
-.page .task-list-item .contains-task-list {
-  margin-top: 4px;
-  padding-left: 22px;
-}
 
 .page table {
   width: 100%;
@@ -488,6 +518,7 @@ body.editor-resizing * {
 
 .page .task-list-item-checkbox {
     accent-color: #d32f2f;
+    opacity: 1;
 }
 
 .manual-heading {
