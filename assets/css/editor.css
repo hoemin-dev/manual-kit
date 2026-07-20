@@ -303,13 +303,14 @@ body.editor-resizing * {
 
 /* Main content area */
 .page-view {
-  width: 170mm;
+  width: 210mm;
   margin: 0 auto 16px;
 }
 
 .page {
-  width: 170mm;
+  width: 210mm;
   height: 237mm;
+  padding: 0mm 14mm;
   overflow: hidden;
   background: #fff;
   --heading-number-width: 64px;
@@ -318,6 +319,11 @@ body.editor-resizing * {
     var(--heading-number-width) + var(--heading-column-gap)
   );
   line-height: 1.6;
+}
+
+.page > :first-child,
+.page > .manual-chapter-start:first-child + * {
+  margin-top: 0;
 }
 
 .preview-page-number {
@@ -528,11 +534,6 @@ body.editor-resizing * {
   align-items: baseline;
 }
 
-.page > h1:not(.manual-heading),
-.page > h2:not(.manual-heading) {
-  margin-left: var(--content-indent);
-}
-
 .manual-heading-title {
   min-width: 0;
 }
@@ -548,13 +549,17 @@ body.editor-resizing * {
   번호 유무와 관계없이 제목 텍스트와 본문의 시작선을 통일한다.
   직접 자식만 지정하여 목록 안의 문단이나 중첩 목록에는 중복 적용하지 않는다.
 */
-.page > p,
-.page > ul,
-.page > ol,
-.page > blockquote,
-.page > pre,
-.page > table,
-.page > hr  {
+
+/* chapter 시작 위치를 표시하는 숨김 marker */
+.manual-chapter-start {
+  display: none;
+}
+
+/*
+  %chapter marker 뒤에 나오는 직접 자식 본문만 들여쓰기한다.
+  hr은 selector에 포함하지 않으므로 항상 전체 폭을 사용한다.
+*/
+.page > .manual-content-indent {
   margin-left: var(--content-indent);
 }
 
