@@ -2,7 +2,7 @@
 
 function renderManualMarkdown(source, md) {
   const pages = source.split(/^%page\s*$/gm);
-  const total = pages.length;
+  const totalPages = pages.length;
 
   const numbering = {
     chapter: null,
@@ -14,25 +14,90 @@ function renderManualMarkdown(source, md) {
     h6: 0,
   };
 
+  /*
+   * 메타데이터 기능을 붙이기 전까지 사용하는 임시 문서 정보.
+   *
+   * 나중에는 YAML 또는 GUI 설정값으로 교체한다.
+   */
+  const documentInfo = {
+    title: "K-Series Installation Manual",
+    documentNumber: "MK-K-001",
+    revision: "Rev. A",
+    logoSrc: "./assets/logos/company.svg",
+  };
+
+  /*
+   * 이전 페이지의 H1을 다음 페이지까지 유지한다.
+   */
+  let currentHeaderTitle = "";
+
   return pages
-    .map((page, index) => {
-      const processed = preprocessManualMarkdown(
-        page.trim(),
-        md,
-        numbering,
-      );
+    .map((pageSource, index) => {
+      const pageNumber = index + 1;
+
+      const processed =
+        preprocessManualMarkdown(
+          pageSource.trim(),
+          md,
+          numbering,
+        );
 
       const rendered = md.render(processed);
-      const content = applyManualIndentState(rendered);
+
+      const content =
+        applyManualIndentState(rendered);
+
+      /*
+       * 현재 페이지에 H1이 있으면
+       * 해당 H1을 이후 Header 제목으로 사용한다.
+       *
+       * H1이 없으면 이전 페이지의 제목을 계속 사용한다.
+       */
+      const pageH1 =
+        findFirstHeadingTitle(content, 1);
+
+      if (pageH1) {
+        currentHeaderTitle = pageH1;
+      }
+
+      /*
+       * 홀수 페이지는 오른쪽 페이지로 보고 로고 표시.
+       * 짝수 페이지에는 로고를 표시하지 않는다.
+       */
+      const showLogo =
+        pageNumber % 2 === 1;
+
+      const headerHtml =
+        PageHeader.render({
+          title: currentHeaderTitle,
+          logoSrc: documentInfo.logoSrc,
+          showLogo,
+        });
+
+      const footerHtml =
+        PageFooter.render({
+          pageNumber,
+          totalPages,
+          documentTitle: documentInfo.title,
+          documentNumber:
+            documentInfo.documentNumber,
+          revision: documentInfo.revision,
+        });
 
       return `
         <div class="page-view">
           <div class="page">
-            ${content}
+            ${headerHtml}
+
+            <main class="page-body">
+              ${content}
+            </main>
+
+            ${footerHtml}
           </div>
 
           <div class="preview-page-number">
-            ${index + 1} / ${total}
+            ${pageNumber} / ${totalPages}
           </div>
         </div>
       `;
@@ -41,10 +106,52 @@ function renderManualMarkdown(source, md) {
 }
 
 //==================================================
+// 렌더링된 페이지에서 첫 번째 제목 찾기
+//==================================================
+
+function findFirstHeadingTitle(
+  html,
+  level = 1,
+) {
+  const template =
+    document.createElement("template");
+
+  template.innerHTML = html;
+
+  const heading =
+    template.content.querySelector(
+      `h${level}`,
+    );
+
+  if (!heading) {
+    return "";
+  }
+
+  /*
+   * 번호가 붙은 manual-heading에서는
+   * 번호를 제외한 제목 텍스트만 사용한다.
+   */
+  const titleElement =
+    heading.querySelector(
+      ".manual-heading-title",
+    );
+
+  if (titleElement) {
+    return titleElement.textContent.trim();
+  }
+
+  return heading.textContent.trim();
+}
+
+//==================================================
 // Manual Kit 전용 문법 전처리
 //==================================================
 
-function preprocessManualMarkdown(source, md, numbering) {
+function preprocessManualMarkdown(
+  source,
+  md,
+  numbering,
+) {
   const lines = source.split(/\r?\n/);
   const output = [];
 
@@ -100,6 +207,7 @@ function preprocessManualMarkdown(source, md, numbering) {
 
     if (chapterMatch) {
       const nextChapter = chapterMatch[1];
+
       const isNewChapter =
         numbering.chapter !== nextChapter;
 
@@ -159,7 +267,8 @@ function preprocessManualMarkdown(source, md, numbering) {
     );
 
     if (headingMatch) {
-      const level = headingMatch[1].length;
+      const level =
+        headingMatch[1].length;
 
       // %chapter가 아직 선언되지 않았거나
       // %sub로 번호 모드가 꺼진 상태라면
@@ -176,10 +285,11 @@ function preprocessManualMarkdown(source, md, numbering) {
         headingMatch[2].trim(),
       );
 
-      const number = getManualHeadingNumber(
-        level,
-        numbering,
-      );
+      const number =
+        getManualHeadingNumber(
+          level,
+          numbering,
+        );
 
       output.push(
         `<h${level} class="manual-heading manual-heading-${level}">` +
@@ -219,7 +329,8 @@ function preprocessManualMarkdown(source, md, numbering) {
 //==================================================
 
 function applyManualIndentState(html) {
-  const template = document.createElement("template");
+  const template =
+    document.createElement("template");
 
   template.innerHTML = html;
 
@@ -276,7 +387,9 @@ function applyManualIndentState(html) {
 // 제목 번호 초기화
 //==================================================
 
-function resetManualHeadingNumbers(numbering) {
+function resetManualHeadingNumbers(
+  numbering,
+) {
   numbering.h2 = 0;
   numbering.h3 = 0;
   numbering.h4 = 0;
@@ -313,7 +426,11 @@ function getManualHeadingNumber(
 
   const parts = [chapter];
 
-  for (let i = 2; i <= level; i += 1) {
+  for (
+    let i = 2;
+    i <= level;
+    i += 1
+  ) {
     parts.push(numbering[`h${i}`]);
   }
 

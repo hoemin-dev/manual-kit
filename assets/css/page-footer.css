@@ -1,0 +1,47 @@
+/* assets/css/page-footer.css */
+
+.page-footer {
+  box-sizing: border-box;
+
+  width: 100%;
+  height: 18mm;
+  flex: 0 0 18mm;
+
+  display: grid;
+  grid-template-columns:
+    minmax(24mm, 1fr)
+    minmax(0, 2fr)
+    minmax(38mm, 1fr);
+
+  align-items: end;
+  gap: 6mm;
+
+  padding-top: 4mm;
+  padding-bottom: 5mm;
+
+  color: #333;
+  font-size: 7.5pt;
+  line-height: 1.2;
+}
+
+.page-footer__left,
+.page-footer__center,
+.page-footer__right {
+  min-width: 0;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.page-footer__left {
+  text-align: left;
+}
+
+.page-footer__center {
+  text-align: center;
+}
+
+.page-footer__right {
+  text-align: right;
+}

@@ -308,21 +308,46 @@ body.editor-resizing * {
 }
 
 .page {
+  box-sizing: border-box;
+
   width: 210mm;
-  height: 237mm;
-  padding: 0mm 14mm;
+  height: 297mm;
+
+  padding: 0 14mm;
+
+  display: flex;
+  flex-direction: column;
+
   overflow: hidden;
   background: #fff;
+
   --heading-number-width: 64px;
   --heading-column-gap: 10px;
   --content-indent: calc(
-    var(--heading-number-width) + var(--heading-column-gap)
+    var(--heading-number-width) +
+    var(--heading-column-gap)
   );
+
   line-height: 1.6;
 }
 
-.page > :first-child,
-.page > .manual-chapter-start:first-child + * {
+.page-body {
+  box-sizing: border-box;
+
+  width: 100%;
+  height: 257mm;
+  flex: 0 0 257mm;
+
+  min-width: 0;
+  min-height: 0;
+
+  overflow: hidden;
+  position: relative;
+}
+
+.page-body > :first-child,
+.page-body >
+.manual-chapter-start:first-child + * {
   margin-top: 0;
 }
 
@@ -559,7 +584,7 @@ body.editor-resizing * {
   %chapter marker 뒤에 나오는 직접 자식 본문만 들여쓰기한다.
   hr은 selector에 포함하지 않으므로 항상 전체 폭을 사용한다.
 */
-.page > .manual-content-indent {
+.page-body > .manual-content-indent {
   margin-left: var(--content-indent);
 }
 
