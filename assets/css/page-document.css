@@ -1,0 +1,187 @@
+/* assets/css/page-document.css
+   복구본: 본문 header/footer 스타일은 page-header.css, page-footer.css가 전담한다.
+*/
+
+/* Cover */
+.cover-page {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #ffffff;
+  font-family: Arial, "Nanum Gothic", sans-serif;
+}
+
+.cover-page-front {
+  padding: 22mm 20mm;
+  background: linear-gradient(
+    150deg,
+    #ffffff 0%,
+    #ffffff 61%,
+    #eef5f3 61%,
+    #eef5f3 100%
+  );
+}
+
+.cover-front-logo-wrap {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cover-front-logo,
+.cover-back-logo {
+  display: block;
+  max-width: 42mm;
+  max-height: 15mm;
+  object-fit: contain;
+}
+
+.cover-front-title-wrap {
+  position: absolute;
+  left: 20mm;
+  top: 92mm;
+  width: 124mm;
+}
+
+.cover-front-kicker {
+  margin-bottom: 7mm;
+  color: #008f64;
+  font-size: 12pt;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cover-front-title {
+  margin: 0;
+  color: #17212b;
+  font-size: 29pt;
+  line-height: 1.18;
+}
+
+.cover-front-subtitle {
+  margin-top: 6mm;
+  color: #52606d;
+  font-size: 14pt;
+}
+
+.cover-front-document-number {
+  margin-top: 9mm;
+  color: #52606d;
+  font-size: 10pt;
+}
+
+.cover-front-bottom-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 6mm;
+  height: 100%;
+
+  background: #008f64;
+}
+
+.cover-artwork-wrap {
+  position: absolute;
+  right: 18mm;
+  bottom: 38mm;
+  width: 105mm;
+  height: 82mm;
+  display: grid;
+  place-items: center;
+}
+
+.cover-artwork {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.cover-artwork-placeholder {
+  width: 90mm;
+  display: grid;
+  grid-template-columns: 20mm 1fr 20mm;
+  align-items: center;
+  gap: 4mm;
+  color: #008f64;
+  opacity: 0.35;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cover-artwork-placeholder span {
+  height: 5mm;
+  border-radius: 999px;
+  background: #008f64;
+}
+
+.cover-artwork-placeholder strong {
+  padding: 5mm;
+  border: 1.5mm solid #008f64;
+  border-radius: 12mm;
+}
+
+.inside-cover {
+  display: grid;
+  place-items: center;
+}
+
+.inside-cover .cover-artwork-wrap {
+  position: static;
+  width: 150mm;
+  height: 145mm;
+}
+
+.inside-cover-front .cover-artwork-wrap {
+  transform: translateX(-6mm);
+}
+
+.inside-cover-back .cover-artwork-wrap {
+  transform: translateX(6mm) scaleX(-1);
+}
+
+.inside-cover-label {
+  position: absolute;
+  bottom: 25mm;
+  color: #75808a;
+  font-size: 10pt;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cover-page-back {
+  color: #ffffff;
+  background: linear-gradient(145deg, #0d7254 0%, #008f64 55%, #075e48 100%);
+}
+
+.cover-back-content {
+  position: absolute;
+  left: 20mm;
+  bottom: 24mm;
+}
+
+.cover-back-logo {
+  margin-bottom: 9mm;
+  filter: brightness(0) invert(1);
+}
+
+.cover-back-company {
+  margin-bottom: 6mm;
+  font-size: 20pt;
+  font-weight: 700;
+}
+
+.cover-back-meta {
+  display: flex;
+  gap: 6mm;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 9pt;
+}
+
+@media print {
+  .preview-page-number {
+    display: none !important;
+  }
+}
