@@ -4,6 +4,16 @@
   let formatToolbarEditor = null;
   let formatToolbarInitialized = false;
 
+  const FORMAT_COLORS = [
+    ["red", "#ff0000"], ["orange", "#ff8000"], ["yellow", "#ffff00"],
+    ["lime", "#7cfc00"], ["green", "#00a651"], ["mint", "#98ff98"],
+    ["cyan", "#00ffff"], ["sky", "#87ceeb"], ["blue", "#0066ff"],
+    ["navy", "#003366"], ["violet", "#8a2be2"], ["pink", "#ff69b4"],
+    ["brown", "#8b4513"], ["gold", "#d4af37"], ["grey", "#808080"],
+    ["black", "#000000"], ["white", "#ffffff"]
+  ];
+  const RECENT_COLOR_KEY = "manualkit.recentColors";
+
   function initFormatToolbar(codeMirrorInstance) {
     const headingButton = document.getElementById("formatHeadingButton");
     const headingMenu = document.getElementById("formatHeadingMenu");
@@ -32,6 +42,8 @@
       toggleHeadingMenu();
     });
 
+    initColorPalette();
+
     headingMenu.addEventListener("click", function (event) {
       const menuItem = event.target.closest("[data-heading-level]");
 
@@ -57,12 +69,14 @@
     document.addEventListener("click", function (event) {
       if (!toolbar.contains(event.target)) {
         closeHeadingMenu();
+        closeColorMenu();
       }
     });
 
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape") {
         closeHeadingMenu();
+        closeColorMenu();
       }
     });
 
@@ -510,6 +524,7 @@
 
   function updateToolbarState() {
     updateHeadingLabel();
+    updateColorTarget();
   }
 
   function updateHeadingLabel() {
@@ -527,6 +542,229 @@
     label.textContent = headingMatch
       ? "H" + headingMatch[1].length
       : "Heading";
+  }
+
+  // ==================================================
+  // Color Palette
+  // ==================================================
+
+  function initColorPalette() {
+    const button = document.getElementById("formatColorButton");
+    const menu = document.getElementById("formatColorMenu");
+    const grid = document.getElementById("formatColorGrid");
+    const recentGrid = document.getElementById("formatRecentColorGrid");
+    const otherButton = document.getElementById("formatOtherColor");
+    const eyeButton = document.getElementById("formatEyedropper");
+    const defaultButton = document.getElementById("formatChapterDefault");
+    const input = document.getElementById("formatColorInput");
+
+    if (!button || !menu || !grid || !recentGrid || !input) return;
+
+    grid.innerHTML = "";
+    FORMAT_COLORS.forEach(function (entry) {
+      grid.appendChild(createColorSwatch(entry[0], entry[1]));
+    });
+    renderRecentColors();
+
+    button.addEventListener("click", function (event) {
+      event.stopPropagation();
+      if (menu.hidden) {
+        closeHeadingMenu();
+        openColorMenu();
+      } else {
+        closeColorMenu();
+      }
+    });
+
+    menu.addEventListener("click", function (event) {
+      const swatch = event.target.closest("[data-color-token]");
+      if (!swatch) return;
+      applySelectedColor(swatch.dataset.colorToken, swatch.dataset.colorValue);
+    });
+
+    otherButton.addEventListener("click", function () { input.click(); });
+    input.addEventListener("input", function () {
+      applySelectedColor(input.value.toUpperCase(), input.value.toUpperCase());
+    });
+
+    eyeButton.addEventListener("click", async function () {
+      if (!("EyeDropper" in window)) {
+        input.click();
+        return;
+      }
+      try {
+        const result = await new EyeDropper().open();
+        applySelectedColor(result.sRGBHex.toUpperCase(), result.sRGBHex.toUpperCase());
+      } catch (error) {
+        if (error && error.name !== "AbortError") console.warn("[Format Toolbar] 스포이트 실패", error);
+      }
+    });
+
+    defaultButton.addEventListener("click", function () {
+      applyChapterDefaultColor();
+    });
+  }
+
+  function createColorSwatch(token, value) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "format-color-swatch";
+    button.dataset.colorToken = token;
+    button.dataset.colorValue = value;
+    button.dataset.colorName = token;
+    button.style.background = value;
+    button.title = token;
+    button.setAttribute("aria-label", token + " 색상");
+    return button;
+  }
+
+  function openColorMenu() {
+    const button = document.getElementById("formatColorButton");
+    const menu = document.getElementById("formatColorMenu");
+    if (!button || !menu) return;
+    updateColorTarget();
+    renderRecentColors();
+    menu.hidden = false;
+    button.classList.add("is-open");
+    button.setAttribute("aria-expanded", "true");
+  }
+
+  function closeColorMenu() {
+    const button = document.getElementById("formatColorButton");
+    const menu = document.getElementById("formatColorMenu");
+    if (!button || !menu) return;
+    menu.hidden = true;
+    button.classList.remove("is-open");
+    button.setAttribute("aria-expanded", "false");
+  }
+
+  function isChapterLine() {
+    const cm = formatToolbarEditor;
+    if (!cm) return false;
+    return /^\s*%chapter(?:\s|$)/i.test(cm.getLine(cm.getCursor().line) || "");
+  }
+
+  function updateColorTarget() {
+    const target = document.getElementById("formatColorTarget");
+    const defaultButton = document.getElementById("formatChapterDefault");
+    if (!target || !defaultButton || !formatToolbarEditor) return;
+    const chapter = isChapterLine();
+    target.textContent = chapter ? "챕터 번호 색상" : "텍스트 색상";
+    defaultButton.hidden = !chapter;
+  }
+
+  function applySelectedColor(token, value) {
+    const cm = formatToolbarEditor;
+    if (!cm) return;
+
+    if (isChapterLine()) {
+      applyChapterColor(token);
+    } else {
+      applyInlineColor(token);
+    }
+
+    rememberRecentColor(value);
+    const indicator = document.getElementById("formatColorIndicator");
+    if (indicator) indicator.style.background = value;
+    closeColorMenu();
+    cm.focus();
+  }
+
+  function applyChapterColor(token) {
+    const cm = formatToolbarEditor;
+    const cursor = cm.getCursor();
+    const line = cm.getLine(cursor.line) || "";
+    const match = line.match(/^(\s*)%chapter(?:\s+(\d+))?(?:\s+(?:[a-z]+|#[0-9a-f]{6}))?\s*$/i);
+    if (!match) return;
+    const replacement = match[1] + "%chapter" + (match[2] ? " " + match[2] : "") + " " + token;
+    cm.replaceRange(replacement, { line: cursor.line, ch: 0 }, { line: cursor.line, ch: line.length });
+    cm.setCursor({ line: cursor.line, ch: replacement.length });
+  }
+
+  function applyChapterDefaultColor() {
+    const cm = formatToolbarEditor;
+    if (!cm || !isChapterLine()) return;
+    const cursor = cm.getCursor();
+    const line = cm.getLine(cursor.line) || "";
+    const match = line.match(/^(\s*)%chapter(?:\s+(\d+))?(?:\s+(?:[a-z]+|#[0-9a-f]{6}))?\s*$/i);
+    if (!match) return;
+    const replacement = match[1] + "%chapter" + (match[2] ? " " + match[2] : "");
+    cm.replaceRange(replacement, { line: cursor.line, ch: 0 }, { line: cursor.line, ch: line.length });
+    cm.setCursor({ line: cursor.line, ch: replacement.length });
+    closeColorMenu();
+    cm.focus();
+  }
+
+  function applyInlineColor(token) {
+    const cm = formatToolbarEditor;
+    const from = cm.getCursor("from");
+    const to = cm.getCursor("to");
+    const selected = cm.getRange(from, to);
+
+    if (selected) {
+      const wholeMatch = selected.match(/^%(?:[a-z]+|#[0-9a-f]{6})\[([\s\S]*)\]$/i);
+      const content = wholeMatch ? wholeMatch[1] : selected;
+      const replacement = "%" + token + "[" + content + "]";
+      cm.replaceRange(replacement, from, to);
+      const contentStart = advancePosition(from, "%" + token + "[");
+      cm.setSelection(contentStart, advancePosition(contentStart, content));
+      return;
+    }
+
+    const line = cm.getLine(from.line) || "";
+    const enclosing = findEnclosingColorExpression(line, from.ch);
+    if (enclosing) {
+      const replacement = "%" + token + "[" + enclosing.content + "]";
+      cm.replaceRange(replacement,
+        { line: from.line, ch: enclosing.start },
+        { line: from.line, ch: enclosing.end });
+      cm.setCursor({ line: from.line, ch: enclosing.start + replacement.length });
+      return;
+    }
+
+    const placeholder = "text";
+    const replacement = "%" + token + "[" + placeholder + "]";
+    cm.replaceRange(replacement, from);
+    cm.setSelection(
+      advancePosition(from, "%" + token + "["),
+      advancePosition(from, "%" + token + "[" + placeholder)
+    );
+  }
+
+  function findEnclosingColorExpression(line, ch) {
+    const pattern = /%(?:[a-z]+|#[0-9a-f]{6})\[([^\]\n]*)\]/gi;
+    let match;
+    while ((match = pattern.exec(line))) {
+      const start = match.index;
+      const end = start + match[0].length;
+      if (ch >= start && ch <= end) return { start: start, end: end, content: match[1] };
+    }
+    return null;
+  }
+
+  function rememberRecentColor(value) {
+    if (!/^#[0-9a-f]{6}$/i.test(value)) return;
+    const normalized = value.toUpperCase();
+    const colors = getRecentColors().filter(function (color) { return color !== normalized; });
+    colors.unshift(normalized);
+    try { localStorage.setItem(RECENT_COLOR_KEY, JSON.stringify(colors.slice(0, 6))); } catch (_) {}
+    renderRecentColors();
+  }
+
+  function getRecentColors() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(RECENT_COLOR_KEY) || "[]");
+      return Array.isArray(parsed) ? parsed.filter(function (c) { return /^#[0-9a-f]{6}$/i.test(c); }).slice(0, 6) : [];
+    } catch (_) { return []; }
+  }
+
+  function renderRecentColors() {
+    const grid = document.getElementById("formatRecentColorGrid");
+    if (!grid) return;
+    grid.innerHTML = "";
+    getRecentColors().forEach(function (value) {
+      grid.appendChild(createColorSwatch(value, value));
+    });
   }
 
   // ==================================================

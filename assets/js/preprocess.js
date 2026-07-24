@@ -31,6 +31,7 @@ function renderManualMarkdown(source, md, documentMeta = {}) {
     h4: 0,
     h5: 0,
     h6: 0,
+    color: null, // null이면 CSS 기본 챕터 색상
   };
 
   const bodySources = source.split(/^%page\s*$/gm);
@@ -197,34 +198,22 @@ function preprocessManualMarkdown(source, md, numbering) {
       continue;
     }
 
-    // 강제 챕터 번호 지정 + 번호 모드 ON
-    const forcedChapterMatch = trimmed.match(/^%chapter\s+([0-9]+)\s*$/i);
+    // %chapter [번호] [색상]
+    // 허용: %chapter / %chapter 4 / %chapter red / %chapter 4 red / HEX
+    const chapterCommand = parseManualChapterCommand(trimmed);
 
-    if (forcedChapterMatch) {
-      const nextChapter = Number(forcedChapterMatch[1]);
+    if (chapterCommand) {
+      if (chapterCommand.number !== null) {
+        numbering.chapter = chapterCommand.number;
+        numbering.currentChapter = chapterCommand.number;
+        resetManualHeadingNumbers(numbering);
+      }
 
-      numbering.chapter = nextChapter;
-      numbering.currentChapter = nextChapter;
+      numbering.color = chapterCommand.color; // %chapter만 쓰면 기본색으로 복귀
       numbering.enabled = true;
-
-      resetManualHeadingNumbers(numbering);
 
       output.push('<div class="manual-indent-on"></div>');
       output.push("");
-      continue;
-    }
-
-    // %chapter
-    // 자동 번호 모드로 복귀
-    // 이미 번호 모드라면 번호 및 카운터를 건드리지 않음
-    if (/^%chapter\s*$/i.test(trimmed)) {
-      if (!numbering.enabled) {
-        numbering.enabled = true;
-
-        output.push('<div class="manual-indent-on"></div>');
-        output.push("");
-      }
-
       continue;
     }
 
@@ -251,12 +240,15 @@ function preprocessManualMarkdown(source, md, numbering) {
         continue;
       }
 
-      const title = md.renderInline(headingMatch[2].trim());
+      const title = md.renderInline(transformManualInlineColors(headingMatch[2].trim(), md));
       const number = getManualHeadingNumber(level, numbering);
+      const numberStyle = numbering.color
+        ? ` style="color:${escapeManualAttribute(numbering.color)}"`
+        : "";
 
       output.push(
         `<h${level} class="manual-heading manual-heading-${level}">` +
-          `<span class="manual-heading-number">${number}</span>` +
+          `<span class="manual-heading-number"${numberStyle}>${number}</span>` +
           `<span class="manual-heading-title">${title}</span>` +
           `</h${level}>`,
       );
@@ -264,10 +256,79 @@ function preprocessManualMarkdown(source, md, numbering) {
       continue;
     }
 
-    output.push(originalLine);
+    output.push(transformManualInlineColors(originalLine, md));
   }
 
   return output.join("\n");
+}
+
+const MANUAL_COLOR_NAMES = {
+  red: "#ff0000", orange: "#ff8000", yellow: "#ffff00",
+  lime: "#7cfc00", green: "#00a651", mint: "#98ff98",
+  cyan: "#00ffff", sky: "#87ceeb", blue: "#0066ff",
+  navy: "#003366", violet: "#8a2be2", pink: "#ff69b4",
+  brown: "#8b4513", gold: "#d4af37", grey: "#808080",
+  black: "#000000", white: "#ffffff",
+};
+
+function resolveManualColor(token) {
+  if (!token) return null;
+  const normalized = token.toLowerCase();
+  if (MANUAL_COLOR_NAMES[normalized]) return MANUAL_COLOR_NAMES[normalized];
+  if (/^#[0-9a-f]{6}$/i.test(token)) return token.toUpperCase();
+  return null;
+}
+
+function parseManualChapterCommand(trimmed) {
+  const match = trimmed.match(/^%chapter(?:\s+(.+?))?\s*$/i);
+  if (!match) return null;
+
+  const args = match[1] ? match[1].trim().split(/\s+/) : [];
+  if (args.length > 2) return null;
+
+  let number = null;
+  let color = null;
+
+  if (args.length && /^\d+$/.test(args[0])) {
+    number = Number(args[0]);
+    if (args[1]) {
+      color = resolveManualColor(args[1]);
+      if (!color) return null;
+    }
+  } else if (args.length === 1) {
+    color = resolveManualColor(args[0]);
+    if (!color) return null;
+  } else if (args.length === 2) {
+    return null;
+  }
+
+  return { number, color };
+}
+
+function transformManualInlineColors(text, md) {
+  // 한 줄 안에서 가장 안쪽의 %color[...]부터 처리한다.
+  const pattern = /%([a-z]+|#[0-9a-f]{6})\[([^\]\n]*)\]/gi;
+  let result = text;
+  let previous;
+
+  do {
+    previous = result;
+    result = result.replace(pattern, function (_, token, content) {
+      const color = resolveManualColor(token);
+      if (!color) return _;
+      const rendered = md.renderInline(content);
+      return `<span class="manual-color" style="--manual-color:${escapeManualAttribute(color)}">${rendered}</span>`;
+    });
+  } while (result !== previous && pattern.test(result));
+
+  pattern.lastIndex = 0;
+  return result;
+}
+
+function escapeManualAttribute(value) {
+  return String(value).replace(/[&"'<>]/g, function (char) {
+    return { "&": "&amp;", '"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;" }[char];
+  });
 }
 
 function applyManualIndentState(html) {

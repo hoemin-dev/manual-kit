@@ -54,6 +54,43 @@
 
   <div class="format-toolbar-separator"></div>
 
+  <div class="format-toolbar-group format-color-group">
+    <button
+      type="button"
+      class="format-toolbar-button format-color-button"
+      id="formatColorButton"
+      aria-haspopup="true"
+      aria-expanded="false"
+      title="글자색 / 챕터 번호 색상"
+    >
+      <span class="format-color-icon">A<span id="formatColorIndicator"></span></span>
+      <span class="format-toolbar-arrow">▾</span>
+    </button>
+
+    <div class="format-color-menu" id="formatColorMenu" role="menu" hidden>
+      <div class="format-color-target" id="formatColorTarget">텍스트 색상</div>
+      <div class="format-color-section-title">기본 색상</div>
+      <div class="format-color-grid" id="formatColorGrid"></div>
+
+      <div class="format-color-section-title">최근 색상</div>
+      <div class="format-color-grid format-recent-grid" id="formatRecentColorGrid"></div>
+
+      <div class="format-color-menu-divider"></div>
+      <button type="button" class="format-color-menu-action" id="formatChapterDefault" hidden>
+        <span class="format-color-action-icon">↺</span> 기본 챕터 색상
+      </button>
+      <button type="button" class="format-color-menu-action" id="formatOtherColor">
+        <span class="format-color-action-icon">▣</span> 다른 색...
+      </button>
+      <button type="button" class="format-color-menu-action" id="formatEyedropper">
+        <span class="format-color-action-icon">⌖</span> 스포이트
+      </button>
+      <input type="color" id="formatColorInput" value="#4c91d9" hidden>
+    </div>
+  </div>
+
+  <div class="format-toolbar-separator"></div>
+
   <div class="format-toolbar-group">
     <button type="button" class="format-toolbar-button format-icon-button" data-format-action="bold" title="굵게">
       <strong>B</strong>

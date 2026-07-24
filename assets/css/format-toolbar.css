@@ -163,3 +163,135 @@
     margin: 0 2px;
   }
 }
+
+
+/* ==================================================
+   Text / Chapter Color Palette
+================================================== */
+.format-color-group {
+  position: relative;
+}
+
+.format-color-button {
+  min-width: 42px;
+  padding: 0 7px;
+}
+
+.format-color-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 20px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+#formatColorIndicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 1px;
+  background: #009fe3;
+}
+
+.format-color-menu {
+  width: 222px;
+  position: absolute;
+  top: calc(100% - 1px);
+  left: 0;
+  padding: 8px;
+  background: #2f2f2f;
+  border: 1px solid #505050;
+  border-radius: 4px;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28), 0 1px 3px rgba(0, 0, 0, 0.4);
+  z-index: 110;
+}
+
+.format-color-menu[hidden] { display: none; }
+
+.format-color-target {
+  margin: 0 2px 8px;
+  color: #f0f0f0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.format-color-section-title {
+  margin: 7px 2px 5px;
+  color: #aeb4bd;
+  font-size: 10px;
+  letter-spacing: .02em;
+}
+
+.format-color-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+
+.format-color-swatch {
+  width: 30px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid #666;
+  border-radius: 2px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.format-color-swatch:hover,
+.format-color-swatch:focus-visible {
+  outline: 2px solid #d7e7f7;
+  outline-offset: 1px;
+}
+
+.format-color-swatch[data-color-name="white"] {
+  border-color: #aaa;
+}
+
+.format-recent-grid:empty::after {
+  content: "최근 사용 색상 없음";
+  grid-column: 1 / -1;
+  padding: 4px 2px;
+  color: #777;
+  font-size: 10px;
+}
+
+.format-color-menu-divider {
+  height: 1px;
+  margin: 8px 2px 5px;
+  background: #4b4b4b;
+}
+
+.format-color-menu-action {
+  width: 100%;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: #dadada;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.format-color-menu-action:hover,
+.format-color-menu-action:focus-visible {
+  background: #474747;
+  outline: none;
+}
+
+.format-color-action-icon {
+  width: 16px;
+  color: #bfc5cd;
+  text-align: center;
+}

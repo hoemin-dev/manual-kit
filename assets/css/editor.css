@@ -795,3 +795,11 @@ body.editor-resizing * {
   color: #ffffff !important;
 }
 
+
+/*==================================================
+  Manual Kit Text Color
+==================================================*/
+
+.manual-color {
+  color: var(--manual-color);
+}
