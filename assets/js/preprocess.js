@@ -122,6 +122,7 @@ function renderBodyPage({
     documentTitle: meta.title,
     documentNumber: meta.documentNumber,
     revision: meta.revision,
+    isEven: pageNumber % 2 === 0,
   });
 
   return `

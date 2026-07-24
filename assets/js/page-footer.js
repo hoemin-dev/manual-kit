@@ -15,22 +15,25 @@
     documentTitle = "",
     documentNumber = "",
     revision = "",
+    isEven = false,
   } = {}) {
-    const pageText = pageNumber !== "" && totalPages !== ""
-      ? `${pageNumber} / ${totalPages}`
-      : "";
+    const pageText =
+      pageNumber !== "" && totalPages !== ""
+        ? `${pageNumber} / ${totalPages}`
+        : "";
 
-    const documentMeta = [documentNumber, revision]
-      .filter(Boolean)
-      .join("  ");
+    const documentMeta = [documentNumber, revision].filter(Boolean).join("  ");
+
+    const left = isEven ? pageText : documentMeta;
+    const right = isEven ? documentMeta : pageText;
 
     return `
-      <footer class="page-footer">
-        <div class="page-footer__left">${esc(pageText)}</div>
-        <div class="page-footer__center">${esc(documentTitle)}</div>
-        <div class="page-footer__right">${esc(documentMeta)}</div>
-      </footer>
-    `;
+<footer class="page-footer">
+  <div class="page-footer__left">${esc(left)}</div>
+  <div class="page-footer__center">${esc(documentTitle)}</div>
+  <div class="page-footer__right">${esc(right)}</div>
+</footer>
+`;
   }
 
   window.ManualKitPageFooter = { render };

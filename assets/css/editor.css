@@ -313,7 +313,7 @@ body.editor-resizing * {
   width: 210mm;
   height: 297mm;
 
-  padding: 0 14mm;
+  padding: 0 12mm;
 
   display: flex;
   flex-direction: column;
@@ -321,8 +321,8 @@ body.editor-resizing * {
   overflow: hidden;
   background: #fff;
 
-  --heading-number-width: 64px;
-  --heading-column-gap: 10px;
+  --heading-number-width: 48px;
+  --heading-column-gap: 24px;
   --content-indent: calc(
     var(--heading-number-width) +
     var(--heading-column-gap)
@@ -335,8 +335,8 @@ body.editor-resizing * {
   box-sizing: border-box;
 
   width: 100%;
-  height: 257mm;
-  flex: 0 0 257mm;
+  height: 246mm;
+  flex: 0 0 246mm;
 
   min-width: 0;
   min-height: 0;
@@ -359,6 +359,10 @@ body.editor-resizing * {
   user-select: none;
 }
 
+.page {
+  font-size: 16px;
+  line-height: 1.6;
+}
 
 .page h1 {
   margin: 1.6em 0 0.8em;
@@ -397,8 +401,9 @@ body.editor-resizing * {
 .page :not(pre) > code {
   padding: 3px 7px;
   border-radius: 6px;
-  background: #f5f4ee;
-  color: #008f64;
+  border: 0.6px solid #ccc;
+  background: #fcf8ee;
+  color: #008f48;
   font-family: Arial, "Nanum Gothic", monospace;
   font-size: 16px;
   font-weight: 400;
@@ -408,7 +413,8 @@ body.editor-resizing * {
   margin: 14px 0;
   padding: 14px 16px;
   border-radius: 6px;
-  background: #f5f4ee;
+  border: 0.6px solid #eee;
+  background: #f8f3e6;
   overflow-x: auto;
   line-height: 1.55;
 }
@@ -417,7 +423,7 @@ body.editor-resizing * {
   padding: 0;
   border-radius: 0;
   background: transparent;
-  color: #008f64;
+  color: #008f48;
   font-family: Arial, "Nanum Gothic", monospace;
   font-size: 16px;
 }
@@ -565,7 +571,7 @@ body.editor-resizing * {
 
 
 .manual-heading-number {
-  color: #009fe3;
+  color:  #00ad00;
   font-weight: 700;
   white-space: nowrap;
 }

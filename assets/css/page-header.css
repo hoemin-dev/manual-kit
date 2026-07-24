@@ -6,16 +6,16 @@
   flex: 0 0 22mm;
 
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 38mm;
+  grid-template-columns: minmax(0, 1fr) 34mm;
   grid-template-rows: 9mm 0.35mm;
 
-  column-gap: 10mm;
+  column-gap: 0mm;
   row-gap: 1.5mm;
 
   align-items: end;
 
   padding-top: 5mm;
-  padding-bottom: 5mm;
+  padding-bottom: 23mm;
 }
 
 .page-header__title {
@@ -24,10 +24,11 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  text-transform: uppercase;
 
-  color: #333;
-  font-size: 8pt;
-  font-weight: 600;
+  color: #444;
+  font-size: 17px;
+  font-weight: 400;
   line-height: 1.2;
 }
 
@@ -51,6 +52,8 @@
   height: auto;
   max-height: 9mm;
 
+  transform: translateY(2mm);
+
   object-fit: contain;
 }
 
@@ -64,7 +67,7 @@
   width: 100%;
   height: 0;
 
-  border-bottom: 0.35mm solid #555;
+  border-bottom: 0.35mm solid #aaa;
 }
 
 /* 로고가 있는 페이지: 로고 앞에서 선 종료 */
